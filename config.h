@@ -1,0 +1,35 @@
+#ifndef CONFIG_H
+#define CONFIG_H
+
+#include <Arduino.h>
+
+#define NAVMAN_SERIAL Serial3
+#define NAVMAN_BAUDRATE 9600
+#define NAVMAN_SERIAL_BUFFER_SIZE 128
+
+#define GPS_SERIAL Serial2
+#define GPS_BAUDRATE 9600
+#define GPS_SERIAL_BUFFER_SIZE 256
+
+// ==================== BUTTONS CONFIG ====================
+
+#define BUTTONS_AMOUNT 4
+#define BUTTONS_EVENTS_QUEUE 10
+#define BUTTONS_EVENT_MAX_HANDLERS 10
+
+#define BUTTON_SHORT_PRESS_DURATION_MS 50
+#define BUTTON_LONG_PRESS_DURATION_MS 500
+
+#define BUTTON_1_PIN 62
+#define BUTTON_1_PULL INPUT_PULLUP
+
+#define BUTTON_2_PIN 63
+#define BUTTON_2_PULL INPUT_PULLUP
+
+#define BUTTON_3_PIN 64
+#define BUTTON_3_PULL INPUT_PULLUP
+
+#define BUTTON_4_PIN 65
+#define BUTTON_4_PULL INPUT_PULLUP
+
+#endif // CONFIG_H
