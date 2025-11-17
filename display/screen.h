@@ -5,6 +5,8 @@
 #include "icon.h"
 #include "button.h"
 #include "buttons.h"
+#include "heading_widget.h"
+#include "clock_widget.h"
 #include "icons/bulb.h"
 #include "icons/header.h"
 #include "icons/left_arrow.h"
@@ -15,7 +17,11 @@
 class Screen
 {
 public:
-    Screen()
+    Screen() : Screen(2)
+    {
+    }
+
+    Screen(uint8_t fps) : fps_(fps)
     {
         Keyboard::get_instance().subscribe(on_key_pressed, this);
     }
@@ -27,7 +33,14 @@ public:
 
     void draw(Display &display)
     {
+        uint32_t now = millis();
+        if (now - last_draw_time_ < (1000 / fps_))
+        {
+            return;
+        }
+
         draw_content(display);
+        last_draw_time_ = millis();
     }
 
     virtual void clear(Display &display) = 0;
@@ -42,6 +55,10 @@ private:
         Screen *screen = static_cast<Screen *>(context);
         screen->key_press_handler(button_index, event_type);
     }
+
+private:
+    uint8_t fps_;
+    uint32_t last_draw_time_{0};
 };
 
 class DashboardScreen : public Screen
@@ -49,7 +66,9 @@ class DashboardScreen : public Screen
 public:
     DashboardScreen() : Screen(),
                         title_text_("Dashboard A", 5, 4, 2),
-                        header_icon_(0, 0, header_icon, header_width, header_height)
+                        header_icon_(0, 0, header_icon, header_width, header_height),
+                        heading_widget_(350, 150),
+                        clock_widget_(180, 10)
     {
         header_icon_.set_child(&title_text_);
         buttons_.get_button(0).set_icon(Icon(0, 0, bulb_icon, bulb_width, bulb_height));
@@ -68,6 +87,8 @@ public:
         header_icon_.draw(display);
         title_text_.draw(display);
         buttons_.draw(display);
+        heading_widget_.draw(display);
+        clock_widget_.draw(display);
     }
 
     void clear(Display &display) override
@@ -75,6 +96,8 @@ public:
         title_text_.clear_content(display);
         header_icon_.clear_content(display);
         buttons_.clear_content(display);
+        heading_widget_.clear_content(display);
+        clock_widget_.clear_content(display);
     }
 
 protected:
@@ -90,6 +113,8 @@ private:
     Buttons buttons_;
     Text title_text_;
     Icon header_icon_;
+    HeadingWidget heading_widget_;
+    ClockWidget clock_widget_;
 };
 
 class LogScreen : public Screen

@@ -44,6 +44,18 @@ public:
     TFT_display.fillRoundRect(x, y, width, height, radius, color);
   }
 
+  void draw_circle(uint16_t x, uint16_t y, uint16_t radius, uint16_t color) {
+    TFT_display.drawCircle(x, y, radius, color);
+  }
+  
+  void draw_line(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color) {
+    TFT_display.drawLine(x0, y0, x1, y1, color);
+  }
+  
+  void draw_fill_triangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color) {
+    TFT_display.fillTriangle(x0, y0, x1, y1, x2, y2, color);
+  }
+  
   void clear() {
     TFT_display.fillScreen(color_scheme_.background_color());
   }
