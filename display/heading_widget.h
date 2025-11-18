@@ -5,8 +5,8 @@
 
 namespace {
     static const float ANGLE_RESOLUTION = 3.0f; // degrees
-    static const int16_t px[] = {-20, -25, -15,  -10,   0};
-    static const int16_t py[] = { 80,   0, -50, -60, -80};
+    static const int16_t px[] = {-20, -25, -25, -15,  -10,   0};
+    static const int16_t py[] = { 80,   5, -10, -50, -60, -80};
 }
 
 class HeadingWidget : public Drawable {

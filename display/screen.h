@@ -7,6 +7,8 @@
 #include "buttons.h"
 #include "heading_widget.h"
 #include "clock_widget.h"
+#include "metrics_widget.h"
+#include "satellite_widget.h"
 #include "icons/bulb.h"
 #include "icons/header.h"
 #include "icons/left_arrow.h"
@@ -68,7 +70,9 @@ public:
                         title_text_("Dashboard A", 5, 4, 2),
                         header_icon_(0, 0, header_icon, header_width, header_height),
                         heading_widget_(350, 150),
-                        clock_widget_(180, 10)
+                        clock_widget_(180, 5),
+                        metrics_widget_(20, 40),
+                        satellite_widget_(450, 5)
     {
         header_icon_.set_child(&title_text_);
         buttons_.get_button(0).set_icon(Icon(0, 0, bulb_icon, bulb_width, bulb_height));
@@ -89,6 +93,8 @@ public:
         buttons_.draw(display);
         heading_widget_.draw(display);
         clock_widget_.draw(display);
+        metrics_widget_.draw(display);
+        satellite_widget_.draw(display);
     }
 
     void clear(Display &display) override
@@ -98,6 +104,8 @@ public:
         buttons_.clear_content(display);
         heading_widget_.clear_content(display);
         clock_widget_.clear_content(display);
+        metrics_widget_.clear_content(display);
+        satellite_widget_.clear_content(display);
     }
 
 protected:
@@ -115,6 +123,8 @@ private:
     Icon header_icon_;
     HeadingWidget heading_widget_;
     ClockWidget clock_widget_;
+    MetricsWidget metrics_widget_;
+    SatelliteWidget satellite_widget_;
 };
 
 class LogScreen : public Screen
