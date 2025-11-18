@@ -76,9 +76,9 @@ public:
     {
         header_icon_.set_child(&title_text_);
         buttons_.get_button(0).set_icon(Icon(0, 0, bulb_icon, bulb_width, bulb_height));
-        buttons_.get_button(1).set_icon(Icon(0, 0, settings_icon, settings_width, settings_height));
-        buttons_.get_button(2).set_icon(Icon(0, 0, left_arrow_icon, left_arrow_width, left_arrow_height));
-        buttons_.get_button(3).set_icon(Icon(0, 0, right_arrow_icon, right_arrow_width, right_arrow_height));
+        // buttons_.get_button(1).set_icon(Icon(0, 0, settings_icon, settings_width, settings_height));
+        // buttons_.get_button(2).set_icon(Icon(0, 0, left_arrow_icon, left_arrow_width, left_arrow_height));
+        // buttons_.get_button(3).set_icon(Icon(0, 0, right_arrow_icon, right_arrow_width, right_arrow_height));
     }
 
     ~DashboardScreen() override = default;

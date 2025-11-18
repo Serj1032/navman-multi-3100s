@@ -11,11 +11,13 @@ public:
         : Drawable(x, y), width_(width), height_(height)
     {
         set_color(ColorScheme::get_instance().button_color());
+        set_visible(false);
     }
 
     ~Button() override = default;
 
     void set_icon(const Icon &icon) {
+        set_visible(true);
         icon_ = icon;
         icon_.set_parent(this);
         icon_.set_color(ColorScheme::get_instance().default_icon_color());
@@ -26,6 +28,7 @@ public:
     }
 
     void set_label(const Text &label) {
+        set_visible(true);
         label_ = label;
         label_.set_parent(this);
         label_.set_color(ColorScheme::get_instance().text_color());
@@ -37,6 +40,11 @@ public:
 
     void draw_content(Display &display) override
     {
+        if (!initialized_ && !is_visible_) {
+            initialized_ = true;
+            return;
+        }
+
         uint16_t bg_color = (parent_ != nullptr) ? parent_->color() : ColorScheme::get_instance().background_color();
         uint16_t color = is_visible_ ? color_ : bg_color;
         display.draw_round_rect(x_, y_, width_, height_, radius_, color);
@@ -57,6 +65,8 @@ public:
     }
 
 private:
+    bool initialized_ = false;
+
     int16_t width_;
     int16_t height_;
     uint16_t radius_ = 8;
