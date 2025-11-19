@@ -2,6 +2,15 @@
 
 #include "screen.h"
 #include "display.h"
+#include "color_scheme.h"
+
+enum class ScreenType : uint8_t
+{
+    NONE = 0,
+    WELCOME,
+    DASHBOARD,
+    LOG,
+};
 
 class ScreenManager
 {
@@ -14,34 +23,26 @@ public:
         return instance;
     }
 
-    void init(Display *display)
-    {
-        display_ = display;
-        current_screen_ = new DashboardScreen();
-    }
+    void init(Display *display);
 
-    void reinit()
-    {
-        if (current_screen_ != nullptr)
-        {
-            delete current_screen_;
-        }
-        display_->clear();
-        current_screen_ = new DashboardScreen();
-    }
+    void process();
 
-    void process()
+    void set_next_screen(ScreenType screen_type)
     {
-        if (current_screen_ && display_)
-        {
-            current_screen_->draw(*display_);
-        }
+        next_screen_type_ = screen_type;
     }
 
 private:
     ScreenManager() = default;
 
+    void reinit();
+
+    void change_screen();
+
 private:
     Display *display_ = nullptr;
+    ScreenType current_screen_type_;
+    ScreenType next_screen_type_;
     Screen *current_screen_ = nullptr;
+    bool is_day_mode_;
 };

@@ -1,5 +1,4 @@
 #include "display/color_scheme.h"
-#include "display/screen_manager.h"
 
 namespace
 {
@@ -47,5 +46,4 @@ void ColorScheme::set_day_mode(bool day_mode)
 void ColorScheme::toggle_theme()
 {
     day_mode_ = !day_mode_;
-    ScreenManager::get_instance().reinit();
 }

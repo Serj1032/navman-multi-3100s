@@ -27,6 +27,8 @@ public:
 
     void toggle_theme();
 
+    bool is_day_mode() const { return day_mode_; }
+
 private:
     ColorScheme() = default;
 
