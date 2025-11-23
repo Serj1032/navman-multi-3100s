@@ -1,61 +1,61 @@
 #pragma once
 
-#include "drawable.h"
+#include "../sensor_gps.h"
+#include "widget.h"
 #include "icon.h"
 #include "icons/sattelite.h"
 #include "color_scheme.h"
+#include "text.h"
 #include "utils.h"
 
-class SatelliteWidget : public Drawable {
+class SatelliteWidget : public Widget {
 public:
     SatelliteWidget() : SatelliteWidget(0, 0) {};
+
     SatelliteWidget(uint16_t x, uint16_t y) : 
-            Drawable(x, y),
-            satellite_icon_(x, y, sattelite_icon, sattelite_width, sattelite_height) 
+            Widget(x, y),
+            sv_count_text_(" 0", x_, y_ + 5, 2),
+            satellite_icon_(x_ + 30, y_, sattelite_icon, sattelite_width, sattelite_height),
+            mode_text_("", x_ + 60, y_ + 5, 2)
     {
         set_color(ColorScheme::get_instance().header_color());
     };
+    
     ~SatelliteWidget() = default;
 
     void clear_content(Display &display) override {
         satellite_icon_.clear_content(display);
+        sv_count_text_.clear_content(display);
+        mode_text_.clear_content(display);
     }
 
     void draw_content(Display &display) override {
-        if (!initialized_) {
+        satellite_icon_.draw(display);
+        sv_count_text_.draw(display);
+        mode_text_.draw(display);
+    }
+
+    void update() override {
+        uint16_t sv_count = gps_.get_sv_count();
+        sv_count_text_.set_text(padStart(String(sv_count), 2, ' '));
+    
+        if (gps_.is_valid()) {
             satellite_icon_.set_color(ColorScheme::get_instance().default_icon_color());
-            satellite_icon_.draw(display);
-            draw_sattelites_amount(display, ColorScheme::get_instance().text_color());
-
-            initialized_ = true;
-            return;
+        } else {
+            satellite_icon_.set_color(ColorScheme::get_instance().warning_color());
         }
 
-        if (new_satellites_amount_ != satellites_amount_) {
-            draw_sattelites_amount(display, ColorScheme::get_instance().background_color());
-            satellites_amount_ = new_satellites_amount_;
-            satellites_amount_str_ = padStart(String(satellites_amount_), 2, ' ');
-            draw_sattelites_amount(display, ColorScheme::get_instance().text_color());
-        }
-    }
+        mode_text_.set_text(String(gps_.get_mode()));
 
-    void set_satellites_amount(uint16_t amount) {
-        if (amount == new_satellites_amount_) {
-            return;
+        if (sv_count_text_.is_dirty() || satellite_icon_.is_dirty() || mode_text_.is_dirty()) {
+            mark_dirty();
         }
-        new_satellites_amount_ = amount;
-        mark_dirty();
     }
 
 private:
-    void draw_sattelites_amount(Display &display, uint16_t color) {
-        display.draw_text(x_ - 30, y_ + 5, satellites_amount_str_.c_str(), 2, color);
-    }
+    GPS& gps_ = GPS::get_instance();
 
-private:
-    bool initialized_ = false;
-    String satellites_amount_str_ = String("0");
-    uint16_t satellites_amount_ = 0;
-    uint16_t new_satellites_amount_ = 0;
+    Text sv_count_text_;
     Icon satellite_icon_;
+    Text mode_text_;
 };

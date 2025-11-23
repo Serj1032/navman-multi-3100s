@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../sensor_gps.h"
 #include "screen.h"
 #include "display.h"
 #include "color_scheme.h"
@@ -33,13 +34,14 @@ public:
     }
 
 private:
-    ScreenManager() = default;
+    ScreenManager();
 
     void reinit();
 
     void change_screen();
 
 private:
+    GPS& gps_ = GPS::get_instance();
     Display *display_ = nullptr;
     ScreenType current_screen_type_;
     ScreenType next_screen_type_;

@@ -1,26 +1,33 @@
 #include "display/screen_manager.h"
 
+ScreenManager::ScreenManager() :
+    display_(nullptr),
+    current_screen_(nullptr),
+    current_screen_type_(ScreenType::NONE),
+    next_screen_type_(ScreenType::WELCOME),
+    is_day_mode_(ColorScheme::get_instance().is_day_mode())
+{
+}
+
 
 void ScreenManager::init(Display *display)
 {
     display_ = display;
-    is_day_mode_ = ColorScheme::get_instance().is_day_mode();
-    current_screen_ = nullptr;
-    current_screen_type_ = ScreenType::NONE;
-    next_screen_type_ = ScreenType::WELCOME;
 }
 
 void ScreenManager::process()
 {
-    if (is_day_mode_ != ColorScheme::get_instance().is_day_mode())
-    {
-        is_day_mode_ = ColorScheme::get_instance().is_day_mode();
-        reinit();
-        return;
-    }
-
     if (current_screen_type_ != next_screen_type_) {
         change_screen();
+    }
+
+    if (current_screen_type_ != ScreenType::WELCOME) {    
+        bool current_day_mode = ColorScheme::get_instance().is_day_mode();
+        if (is_day_mode_ != current_day_mode)
+        {
+            is_day_mode_ = current_day_mode;
+            reinit();
+        }
     }
 
     if (current_screen_ && display_)
@@ -35,6 +42,7 @@ void ScreenManager::reinit()
     if (current_screen_ != nullptr)
     {
         delete current_screen_;
+        current_screen_ = nullptr;
     }
     display_->clear();
     next_screen_type_ = current_screen_type_;
@@ -48,15 +56,19 @@ void ScreenManager::change_screen() {
         current_screen_ = nullptr;
     }
 
+    // Serial.print("Switching to screen: ");
     switch (next_screen_type_) {
     case ScreenType::WELCOME:
         current_screen_ = new WelcomeScreen();
+        // Serial.println("WELCOME");
         break;
     case ScreenType::DASHBOARD:
         current_screen_ = new DashboardScreen();
+        // Serial.println("DASHBOARD");
         break;
     case ScreenType::LOG:
         current_screen_ = new LogScreen();
+        // Serial.println("LOG");
         break;
     default:
         break;

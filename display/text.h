@@ -13,17 +13,25 @@ public:
     {
     }
 
-    Text(const char *text, int x, int y, uint8_t font_size) : Drawable(x, y), text_(text), font_size_(font_size)
+    Text(const char *text, int x, int y, uint8_t font_size) : 
+        Drawable(x, y), 
+        text_(text), 
+        new_text_(text), 
+        font_size_(font_size)
     {
         set_color(ColorScheme::get_instance().text_color());
     }
+    
     ~Text() = default;
 
     void draw_content(Display &display) override
     {
         uint16_t bg_color = (parent_ != nullptr) ? parent_->color() : ColorScheme::get_instance().background_color();
         uint16_t color = is_visible_ ? color_ : bg_color;
-        display.draw_text(x_, y_, text_.c_str(), font_size_, color_);
+
+        display.draw_text(x_, y_, text_.c_str(), font_size_, bg_color);
+        text_ = new_text_;
+        display.draw_text(x_, y_, text_.c_str(), font_size_, color);
     }
 
     void clear_content(Display &display) override
@@ -39,7 +47,11 @@ public:
 
     void set_text(const String &text)
     {
-        text_ = text;
+        if (text_ == text)
+        {
+            return;
+        }
+        new_text_ = text;
         mark_dirty();
     }
 
@@ -55,6 +67,7 @@ public:
 
 private:
     String text_;
+    String new_text_;
     uint8_t font_size_;
 };
 

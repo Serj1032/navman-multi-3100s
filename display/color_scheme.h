@@ -23,6 +23,8 @@ public:
 
     uint16_t button_color();
 
+    uint16_t warning_color();
+
     void set_day_mode(bool day_mode);
 
     void toggle_theme();

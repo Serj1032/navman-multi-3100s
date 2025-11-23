@@ -1,6 +1,4 @@
-#ifndef NMEA_H
-#define NMEA_H
-
+#pragma once
 
 struct NmeaData {
     float log_trip_distance;   // Trip distance in nautical miles

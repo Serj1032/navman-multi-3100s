@@ -1,67 +1,79 @@
 #pragma once
 
-#include "drawable.h"
+#include "../sensor_gps.h"
+#include "widget.h"
+#include "boat_icon.h"
+#include "arrow_icon.h"
 #include "color_scheme.h"
 
 namespace {
     static const float ANGLE_RESOLUTION = 3.0f; // degrees
-    static const int16_t px[] = {-20, -25, -25, -15,  -10,   0};
-    static const int16_t py[] = { 80,   5, -10, -50, -60, -80};
 }
 
-class HeadingWidget : public Drawable {
+class HeadingWidget : public Widget {
 public:
-    HeadingWidget() : Drawable() {};
-    HeadingWidget(uint16_t x, uint16_t y) : Drawable(x, y) {
+    HeadingWidget() : HeadingWidget(0, 0) {};
+
+    HeadingWidget(uint16_t x, uint16_t y) : 
+        Widget(x, y),
+        boat_(x_, y_),
+        gps_arrow_(x_, y_, radius_ - 20)
+    {
         set_color(ColorScheme::get_instance().header_color());
+        gps_arrow_.set_visible(false);
     };
+    
     ~HeadingWidget() = default;
 
     void clear_content(Display &display) override {
         draw_compass_map(display, ColorScheme::get_instance().background_color());
-        draw_boat(display, ColorScheme::get_instance().background_color());
+        boat_.clear_content(display);
+        gps_arrow_.clear_content(display);
     }
 
     void draw_content(Display &display) override {
         draw_compass_map(display, ColorScheme::get_instance().default_icon_color());
-
-        draw_boat(display, ColorScheme::get_instance().background_color());
-        draw_gps_arrow(display, ColorScheme::get_instance().background_color());
-
-        compass_heading_ = new_compass_heading_;
-        gps_heading_ = new_gps_heading_;
-
-        draw_boat(display, ColorScheme::get_instance().default_icon_color());
-        draw_gps_arrow(display, ColorScheme::get_instance().default_icon_color());
+        
+        gps_arrow_.draw_content(display);
+        boat_.draw_content(display);
     }
 
-    void set_compass_heading(float heading) {
-        if (abs(heading - new_compass_heading_) < ANGLE_RESOLUTION) {
-            return;
-        }
-        if (heading < 0.0f) {
-            heading += 360.0f;
-        } else if (heading >= 360.0f) {
-            heading -= 360.0f;
-        }
-        new_compass_heading_ = heading;
-        mark_dirty();
-    }
+    void update() override {
+        gps_arrow_.set_angle(gps_.get_course());
 
-    void set_gps_heading(float heading) {
-        if (abs(heading - new_gps_heading_) < ANGLE_RESOLUTION) {
-            return;
+        uint16_t arrow_length = get_arrow_length();
+        if (arrow_length == 0) {
+            gps_arrow_.set_visible(false);
+        } else {
+            gps_arrow_.set_visible(true);
+            gps_arrow_.set_length(arrow_length);
         }
-        if (heading < 0.0f) {
-            heading += 360.0f;
-        } else if (heading >= 360.0f) {
-            heading -= 360.0f;
+
+        if (gps_arrow_.is_dirty() || boat_.is_dirty()) {
+            mark_dirty();
         }
-        new_gps_heading_ = heading;
-        mark_dirty();
     }
 
 private:
+
+    uint16_t map_value(float x, float in_min, float in_max, float out_min, float out_max) {
+        return static_cast<uint16_t>((x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min);
+    }
+
+    uint16_t get_arrow_length() {
+        if (!gps_.is_course_valid()) {
+            return 0;
+        }
+        float speed_mps = gps_.get_speed_knots() / 1.94384f; // Convert knots to m/s
+        uint16_t length = map_value(speed_mps, 0.2f, 5.0f, 20.0f, static_cast<float>(radius_ - 20));
+        if (length < 20) {
+            length = 0;
+        } else if (length > radius_ - 20) {
+            length = radius_ - 20;
+        }
+        return length;
+    }
+
     void draw_compass_map(Display &display, uint16_t color) {
         display.draw_circle(x(), y(), radius_, color);
         display.draw_circle(x(), y(), radius_ - 1, color);
@@ -72,81 +84,11 @@ private:
         display.draw_text(x() + radius_ + 5, y() - 5, "E", 2, color);
     }
 
-    void rotate_by_angle(int16_t& x, int16_t& y, float angle) {
-    int16_t x0 = x_;
-    int16_t y0 = y_;
-    int16_t orig_x = x;
-    int16_t orig_y = y;
-
-    float rad = angle * PI / 180.0f;
-    float cos_a = cos(rad);
-    float sin_a = sin(rad);
-    x = static_cast<int16_t>(x0 + (orig_x - x0) * cos_a - (orig_y - y0) * sin_a);
-    y = static_cast<int16_t>(y0 + (orig_x - x0) * sin_a + (orig_y - y0) * cos_a);
-    }
-
-    void draw_boat(Display &display, uint16_t color) {
-        int16_t xl = x_ + px[0];
-        int16_t yl = y_ + py[0];
-        int16_t xr = x_ - px[0];
-        int16_t yr = y_ + py[0];
-        rotate_by_angle(xl, yl, compass_heading_);
-        rotate_by_angle(xr, yr, compass_heading_);
-        display.draw_line(xl, yl, xr, yr, color);
-
-        for (int i = 0; i < sizeof(px)/sizeof(px[0]) - 1; ++i) {
-            int16_t _xl = x_ + px[i + 1];
-            int16_t _yl = y_ + py[i + 1];
-            int16_t _xr = x_ - px[i + 1];
-            int16_t _yr = y_ + py[i + 1];
-
-            rotate_by_angle(_xl, _yl, compass_heading_);
-            rotate_by_angle(_xr, _yr, compass_heading_);
-
-            display.draw_line(xl, yl, _xl, _yl, color);
-            display.draw_line(xr, yr, _xr, _yr, color);
-
-            xl = _xl;
-            yl = _yl;
-            xr = _xr;
-            yr = _yr;
-        }
-    }
-
-    void draw_gps_arrow(Display &display, uint16_t color) {
-        int16_t x_start = x_;
-        int16_t y_start = y_;
-        int16_t x_end = x_;
-        int16_t y_end = y_ - radius_ + 20;
-
-        for (int i = -1; i <= 1; i++) {
-            int16_t x0 = x_start + i;
-            int16_t y0 = y_start;
-            int16_t x1 = x_end + i;
-            int16_t y1 = y_end;
-            rotate_by_angle(x0, y0, gps_heading_);
-            rotate_by_angle(x1, y1, gps_heading_);
-            display.draw_line(x0, y0, x1, y1, color);
-        }
-
-        // Draw arrowhead
-        int16_t x0 = x_end;
-        int16_t y0 = y_end - 10;
-        int16_t x1 = x_end - 5;
-        int16_t y1 = y_end + 5;
-        int16_t x2 = x_end + 5;
-        int16_t y2 = y_end + 5;
-        rotate_by_angle(x0, y0, gps_heading_);
-        rotate_by_angle(x1, y1, gps_heading_);
-        rotate_by_angle(x2, y2, gps_heading_);
-        display.draw_fill_triangle(x0, y0, x1, y1, x2, y2, color);
-    }
-
 private:
-    uint16_t radius_{100};
-    float gps_heading_{0.0f}; // angle in degrees
-    float new_gps_heading_{0.0f}; // angle in degrees
-    float compass_heading_{0.0f}; // angle in degrees
-    float new_compass_heading_{0.0f}; // angle in degrees
+    GPS& gps_ = GPS::get_instance();
 
+    uint16_t radius_{100};
+
+    BoatIcon boat_;
+    ArrowIcon gps_arrow_;
 };

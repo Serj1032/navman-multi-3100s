@@ -9,7 +9,7 @@ LogScreen::LogScreen() : Screen(),
     header_icon_.set_child(&title_text_);
 }
 
-void LogScreen::draw_content(Display &display)
+void LogScreen::draw_screen(Display &display)
 {
     header_icon_.set_color(ColorScheme::get_instance().header_color());
     title_text_.set_color(ColorScheme::get_instance().text_color());
@@ -18,7 +18,7 @@ void LogScreen::draw_content(Display &display)
     title_text_.draw(display);
 }
 
-void LogScreen::clear(Display &display)
+void LogScreen::clear_screen(Display &display)
 {
     title_text_.clear_content(display);
     header_icon_.clear_content(display);

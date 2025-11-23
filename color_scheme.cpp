@@ -8,6 +8,8 @@ namespace
     }
 
     static constexpr uint16_t WHITE = colorRGB(255, 255, 255);
+    static constexpr uint16_t WARNING_DAY = colorRGB(255, 0, 0);
+    static constexpr uint16_t WARNING_NIGHT = colorRGB(255, 0, 0);
     static constexpr uint16_t BLACK = colorRGB(0, 0, 0);
     static constexpr uint16_t ICON_DAY = colorRGB(200, 200, 200);
     static constexpr uint16_t ICON_NIGHT = colorRGB(50, 50, 50);
@@ -38,8 +40,15 @@ uint16_t ColorScheme::button_color()
     return day_mode_ ? ICON_DAY : ICON_NIGHT;
 }
 
+uint16_t ColorScheme::warning_color() {
+    return day_mode_ ? WARNING_DAY : WARNING_NIGHT;
+}
+
 void ColorScheme::set_day_mode(bool day_mode)
 {
+    if (day_mode_ == day_mode) {
+        return;
+    }
     day_mode_ = day_mode;
 }
 

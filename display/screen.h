@@ -33,6 +33,8 @@ public:
         Keyboard::get_instance().unsubscribe(on_key_pressed, this);
     }
     
+    virtual void update() = 0;
+
     void draw(Display &display)
     {
         uint32_t now = millis();
@@ -41,16 +43,17 @@ public:
             return;
         }
         
-        draw_content(display);
+        draw_screen(display);
         last_draw_time_ = millis();
     }
     
-    virtual void update() = 0;
-
-    virtual void clear(Display &display) = 0;
-
+    void clear(Display &display) {
+        clear_screen(display);
+    }
+    
 protected:
-    virtual void draw_content(Display &display) = 0;
+    virtual void draw_screen(Display &display) = 0;
+    virtual void clear_screen(Display &display) = 0;
     virtual void key_press_handler(uint8_t button_index, ButtonEventType event_type) = 0;
 
 private:
@@ -72,10 +75,10 @@ public:
     ~DashboardScreen() override = default;
 
     void update() override;
-    void draw_content(Display &display) override;
-    void clear(Display &display) override;
-
+    
 protected:
+    void draw_screen(Display &display) override;
+    void clear_screen(Display &display) override;
     void key_press_handler(uint8_t button_index, ButtonEventType event_type) override;
 
 private:
@@ -96,10 +99,10 @@ public:
     ~WelcomeScreen() override = default;
     
     void update() override;
-    void draw_content(Display &display) override;
-    void clear(Display &display) override;
-
-private:
+    
+    private:
+    void draw_screen(Display &display) override;
+    void clear_screen(Display &display) override;
     void key_press_handler(uint8_t button_index, ButtonEventType event_type) override;
 
 private:
@@ -118,10 +121,10 @@ public:
     ~LogScreen() override = default;
 
     void update() override;
-    void draw_content(Display &display) override;
-    void clear(Display &display) override;
-
+    
 protected:
+    void draw_screen(Display &display) override;
+    void clear_screen(Display &display) override;
     void key_press_handler(uint8_t button_index, ButtonEventType event_type) override;
 
 private:

@@ -2,9 +2,10 @@
 #define NAVMAN_H
 
 #include "config.h"
-#include "nmea.h"
+#include "nmea_protocol.h"
 
-class Navman {
+
+class Navman : public NmeaProtocol {
 public:
     ~Navman() = default;
 
@@ -17,33 +18,26 @@ public:
         NAVMAN_SERIAL.begin(NAVMAN_BAUDRATE);
     }
 
-    void process() {
-        while (NAVMAN_SERIAL.available() > 0) {
-            char c = NAVMAN_SERIAL.read();
-            Serial.print(c);
-            if (c == '\n' || c == '\r') {
-                if (buffer_idx_ == 0) {
-                    continue;
-                }
-                buffer_[buffer_idx_] = '\0';
-                // Serial.print(buffer_);
-                Nmea::get_instance().parse(buffer_, buffer_idx_);
-                buffer_idx_ = 0;
-            } else {
-                buffer_[buffer_idx_++] = c;
-                if (buffer_idx_ >= NAVMAN_SERIAL_BUFFER_SIZE) {
-                    buffer_idx_ = 0;
-                }
-            }
+    bool read_serial(char* c) override {
+        if (NAVMAN_SERIAL.available() > 0) {
+            *c = NAVMAN_SERIAL.read();
+            return true;
         }
+        return false;
     }
 
-private:
-    Navman() = default;
+    void parse(char* msg, uint16_t size) override {
+        // Implement parsing logic here
+        Serial.print("Parsed Navman message: ");
+        Serial.println(msg);
+    }
+
 
 private:
-    char buffer_[NAVMAN_SERIAL_BUFFER_SIZE];
-    uint16_t buffer_idx_ = 0;
+    Navman() : NmeaProtocol() {}
+
+private:
+
 };
 
 

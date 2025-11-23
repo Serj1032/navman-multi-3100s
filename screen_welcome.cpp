@@ -11,14 +11,14 @@ WelcomeScreen::WelcomeScreen() :
     ts_ = millis();
 }
                     
-void WelcomeScreen::draw_content(Display &display)
+void WelcomeScreen::draw_screen(Display &display)
 {
     line1_.draw(display);
     line2_.draw(display);
     author_.draw(display);
 }
 
-void WelcomeScreen::clear(Display &display)
+void WelcomeScreen::clear_screen(Display &display)
 {
     line1_.clear_content(display);
     line2_.clear_content(display);

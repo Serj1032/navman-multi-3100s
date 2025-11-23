@@ -6,7 +6,9 @@ class Drawable
 {
 public:
     Drawable() : x_(0), y_(0) {}
+
     Drawable(uint16_t x, uint16_t y) : x_(x), y_(y) {}
+
     virtual ~Drawable() = default;
 
     void set_position(uint16_t x, uint16_t y)
@@ -67,16 +69,16 @@ public:
 
     void mark_dirty()
     {
-        Drawable *parent = this;
-        while (parent->parent_ != nullptr)
+        Drawable *drawable = this;
+        while (drawable->parent_ != nullptr)
         {
-            parent = parent->parent_;
+            drawable = drawable->parent_;
         }
 
-        while (parent != nullptr)
+        while (drawable != nullptr)
         {
-            parent->is_dirty_ = true;
-            parent = parent->child_;
+            drawable->is_dirty_ = true;
+            drawable = drawable->child_;
         }
     }
 
