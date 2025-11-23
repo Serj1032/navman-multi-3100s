@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../sensor_gps.h"
+#include "../sensor_compass.h"
 #include "widget.h"
 #include "boat_icon.h"
 #include "arrow_icon.h"
@@ -53,6 +54,8 @@ public:
             gps_arrow_.set_visible(false);
         }
 
+        boat_.set_angle(compass_.get_heading());
+
         if (gps_arrow_.is_dirty() || boat_.is_dirty()) {
             mark_dirty();
         }
@@ -87,6 +90,7 @@ private:
 
 private:
     GPS& gps_ = GPS::get_instance();
+    Compass& compass_ = Compass::get_instance();
 
     uint16_t radius_{100};
 

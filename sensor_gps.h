@@ -40,7 +40,7 @@ public:
 
     void parse(char* msg, uint16_t size) override {
         if (strncmp(msg, "$GPRMC", 6) == 0) {
-            Serial.println(msg);
+            // Serial.println(msg);
             course_is_valid_ = false;
             parse_nmea_words(msg, size, &GPS::parse_gprmc, this);
         } else if (strncmp(msg, "$GPVTG", 6) == 0) {
