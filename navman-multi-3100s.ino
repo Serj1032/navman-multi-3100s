@@ -8,6 +8,7 @@
 #include "cli.h"
 
 void setup() {
+  Cli::get_instance().init();
   GPS::get_instance().init();
   Compass::get_instance().init();
   Clock::get_instance().init(1); // UTC+1
@@ -15,7 +16,6 @@ void setup() {
   Keyboard::get_instance().init();
   Display::get_instance().init();
   ScreenManager::get_instance().init(&Display::get_instance());
-  Cli::get_instance().init();
 }
 
 void loop(void) {

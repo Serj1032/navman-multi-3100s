@@ -41,14 +41,19 @@ public:
     }
 
     void init() {
-        // init_pin(0, BUTTON_1_PIN, BUTTON_1_PULL, button_1_irq_handler);
-        // init_pin(1, BUTTON_2_PIN, BUTTON_2_PULL, button_2_irq_handler);
-        // init_pin(2, BUTTON_3_PIN, BUTTON_3_PULL, button_3_irq_handler);
-        // init_pin(3, BUTTON_4_PIN, BUTTON_4_PULL, button_4_irq_handler);
+        init_pin(0, BUTTON_1_PIN, BUTTON_1_PULL, button_1_irq_handler);
+        init_pin(1, BUTTON_2_PIN, BUTTON_2_PULL, button_2_irq_handler);
+        init_pin(2, BUTTON_3_PIN, BUTTON_3_PULL, button_3_irq_handler);
+        init_pin(3, BUTTON_4_PIN, BUTTON_4_PULL, button_4_irq_handler);
     }
 
     void process() {
         ButtonEvent event;
+        // TODO: arduino doesn't support irq on many digits pins
+        for (uint8_t i = 0; i < BUTTONS_AMOUNT; i++) {
+            button_irq_handler(i);
+        }
+
         noInterrupts();
         pull_event(event);
         interrupts();
@@ -63,7 +68,7 @@ public:
     }
 
     void subscribe(ButtonEventCallback callback, void* context) {
-        // Serial.println(F("Keyboard: subscribe"));
+        Serial.println(F("Keyboard: subscribe"));
         for (uint8_t i = 0; i < BUTTONS_EVENT_MAX_HANDLERS; i++) {
             if (event_handlers[i].callback == nullptr) {
                 event_handlers[i].callback = callback;
@@ -74,7 +79,7 @@ public:
     }
 
     void unsubscribe(ButtonEventCallback callback, void* context) {
-        // Serial.println(F("Keyboard: unsubscribe"));
+        Serial.println(F("Keyboard: unsubscribe"));
         for (uint8_t i = 0; i < BUTTONS_EVENT_MAX_HANDLERS; i++) {
             if (event_handlers[i].callback == callback && event_handlers[i].context == context) {
                 event_handlers[i].callback = nullptr;
