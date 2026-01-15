@@ -3,7 +3,7 @@
 #pragma once
 
 #include "config.h"
-#include "nmea_protocol.h"
+#include "protocols/nmea_protocol.h"
 
 /*
 $GPRMC,225530.00,V,,,,,,,191125,,,N*71

@@ -2,6 +2,46 @@
 # Arduino Utility Functions
 # ============================================================================
 
+# Function to create Arduino static library
+function(arduino_library TARGET_NAME SOURCE_PATH)
+    # Collect source files from the provided path (including subdirectories)
+    file(GLOB_RECURSE LIB_SRCS 
+        "${SOURCE_PATH}/*.c"
+        "${SOURCE_PATH}/*.cpp"
+    )
+    
+    # Create static library
+    add_library(${TARGET_NAME} STATIC ${LIB_SRCS})
+    
+    # Set target properties
+    target_compile_definitions(${TARGET_NAME} PUBLIC
+        F_CPU=${F_CPU}
+        ARDUINO=10607
+        ARDUINO_AVR_MEGA2560
+        ARDUINO_ARCH_AVR
+    )
+    
+    target_compile_options(${TARGET_NAME} PUBLIC
+        -mmcu=${MCU}
+        -DF_CPU=${F_CPU}
+        $<$<COMPILE_LANGUAGE:CXX>:-std=gnu++11>
+        $<$<COMPILE_LANGUAGE:CXX>:-fpermissive>
+        $<$<COMPILE_LANGUAGE:CXX>:-fno-exceptions>
+        $<$<COMPILE_LANGUAGE:CXX>:-fno-threadsafe-statics>
+        $<$<COMPILE_LANGUAGE:C>:-std=gnu11>
+        -Os
+        -Wall
+        -Wextra
+        -ffunction-sections
+        -fdata-sections
+        -flto
+    )
+    
+    target_include_directories(${TARGET_NAME} PUBLIC
+        ${SOURCE_PATH}
+    )
+endfunction()
+
 # Function to create hex and bin files from Arduino executable
 function(arduino_executable TARGET_NAME)
     # Get the objcopy tool

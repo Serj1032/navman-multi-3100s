@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../sensor_gps.h"
-#include "../sensor_compass.h"
+#include "sensors/sensor_gps.h"
+#include "sensors/sensor_compass.h"
 #include "widget.h"
 #include "boat_icon.h"
 #include "arrow_icon.h"

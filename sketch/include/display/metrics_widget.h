@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../sensor_gps.h"
+#include "sensors/sensor_gps.h"
 #include "widget.h"
 #include "color_scheme.h"
 #include "metric_value_widget.h"

@@ -14,7 +14,7 @@
 #include "icons/left_arrow.h"
 #include "icons/right_arrow.h"
 #include "icons/settings.h"
-#include "../keyboard.h"
+#include "keyboard.h"
 
 class Screen
 {

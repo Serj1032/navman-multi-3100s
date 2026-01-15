@@ -2,7 +2,7 @@
 #define NAVMAN_H
 
 #include "config.h"
-#include "nmea_protocol.h"
+#include "protocols/nmea_protocol.h"
 
 
 class Navman : public NmeaProtocol {

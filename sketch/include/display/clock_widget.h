@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../sensor_gps.h"
-#include "../clock.h"
+#include "sensors/sensor_gps.h"
+#include "clock.h"
 #include "color_scheme.h"
 #include "utils.h"
 #include "text.h"

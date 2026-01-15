@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../sensor_gps.h"
+#include "sensors/sensor_gps.h"
 #include "screen.h"
 #include "display.h"
 #include "color_scheme.h"

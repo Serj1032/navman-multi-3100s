@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../sensor_gps.h"
+#include "sensors/sensor_gps.h"
 #include "widget.h"
 #include "icon.h"
 #include "icons/sattelite.h"

@@ -1,7 +1,7 @@
 #include "display/screen.h"
 #include "display/screen_manager.h"
 
-#include "sensor_gps.h"
+#include "sensors/sensor_gps.h"
 
 
 DashboardScreen::DashboardScreen() : Screen(),

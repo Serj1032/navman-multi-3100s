@@ -1,6 +1,6 @@
 #pragma once
 
-#include "sensor_gps.h"
+#include "sensors/sensor_gps.h"
 #include "display/color_scheme.h"
 
 class Time {
