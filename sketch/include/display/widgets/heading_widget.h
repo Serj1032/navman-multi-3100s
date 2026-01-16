@@ -1,7 +1,8 @@
 #pragma once
 
-#include "sensors/sensor_gps.h"
-#include "sensors/sensor_compass.h"
+// #include "sensors/sensor_gps.h"
+// #include "sensors/sensor_compass.h"
+#include "sensor_manager.h"
 #include "display/widgets/widget.h"
 #include "display/icons/boat_icon.h"
 #include "display/icons/arrow_icon.h"
@@ -40,21 +41,21 @@ public:
     }
 
     void update() override {
-        if (gps_.is_course_valid()) {
-            gps_arrow_.set_angle(gps_.get_course());
+        // if (gps_.is_course_valid()) {
+        //     gps_arrow_.set_angle(gps_.get_course());
 
-            uint16_t arrow_length = get_arrow_length();
-            if (arrow_length == 0) {
-                gps_arrow_.set_visible(false);
-            } else {
-                gps_arrow_.set_visible(true);
-                gps_arrow_.set_length(arrow_length);
-            }
-        } else {
-            gps_arrow_.set_visible(false);
-        }
+        //     uint16_t arrow_length = get_arrow_length();
+        //     if (arrow_length == 0) {
+        //         gps_arrow_.set_visible(false);
+        //     } else {
+        //         gps_arrow_.set_visible(true);
+        //         gps_arrow_.set_length(arrow_length);
+        //     }
+        // } else {
+        //     gps_arrow_.set_visible(false);
+        // }
 
-        boat_.set_angle(compass_.get_heading());
+        // boat_.set_angle(compass_.get_heading());
 
         if (gps_arrow_.is_dirty() || boat_.is_dirty()) {
             mark_dirty();
@@ -68,7 +69,8 @@ private:
     }
 
     uint16_t get_arrow_length() {
-        float speed_mps = gps_.get_speed_knots() / 1.94384f; // Convert knots to m/s
+        // float speed_mps = gps_.get_speed_knots() / 1.94384f; // Convert knots to m/s
+        float speed_mps = 0.0f;
         uint16_t length = map_value(speed_mps, 0.2f, 5.0f, 20.0f, static_cast<float>(radius_ - 20));
         if (length < 20) {
             length = 0;
@@ -89,8 +91,8 @@ private:
     }
 
 private:
-    GPS& gps_ = GPS::get_instance();
-    Compass& compass_ = Compass::get_instance();
+    // GPS& gps_ = GPS::get_instance();
+    // Compass& compass_ = Compass::get_instance();
 
     uint16_t radius_{100};
 
