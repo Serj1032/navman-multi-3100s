@@ -65,3 +65,26 @@ target_link_options(navman-multi-3100s PRIVATE
 
 # Generate hex and bin files
 arduino_executable(navman-multi-3100s)
+
+# AVR flash configuration
+set(AVRDUDE_PATH "$ENV{HOME}/Library/Arduino15/packages/arduino/tools/avrdude/6.3.0-arduino17/bin/avrdude" CACHE STRING "Path to avrdude binary")
+set(AVRDUDE_CONFIG "$ENV{HOME}/Library/Arduino15/packages/arduino/tools/avrdude/6.3.0-arduino17/etc/avrdude.conf" CACHE STRING "Path to avrdude config")
+set(AVRDUDE_PORT "/dev/cu.usbserial-1420" CACHE STRING "Serial port for flashing")
+set(AVRDUDE_PROGRAMMER "wiring" CACHE STRING "Programmer type (wiring for ATmega2560)")
+set(AVRDUDE_BAUD "115200" CACHE STRING "Baud rate for flashing")
+
+# Add flash target
+add_custom_target(flash
+    COMMAND ${AVRDUDE_PATH} -C${AVRDUDE_CONFIG} -v -patmega2560 -c${AVRDUDE_PROGRAMMER} -P${AVRDUDE_PORT} -b${AVRDUDE_BAUD} -D -Uflash:w:navman-multi-3100s.hex:i
+    DEPENDS navman-multi-3100s
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    COMMENT "Flashing ATmega2560 with ${AVRDUDE_PORT} at ${AVRDUDE_BAUD} baud"
+)
+
+# Add flash-bin target (alternative using .bin file)
+add_custom_target(flash-bin
+    COMMAND ${AVRDUDE_PATH} -C${AVRDUDE_CONFIG} -v -patmega2560 -c${AVRDUDE_PROGRAMMER} -P${AVRDUDE_PORT} -b${AVRDUDE_BAUD} -D -Uflash:w:navman-multi-3100s.bin:r
+    DEPENDS navman-multi-3100s
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    COMMENT "Flashing ATmega2560 with .bin file using ${AVRDUDE_PORT} at ${AVRDUDE_BAUD} baud"
+)

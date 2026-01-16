@@ -15,3 +15,10 @@ cd build
 cmake .. -DCMAKE_TOOLCHAIN_FILE=../cmake/arduino_toolchain.cmake
 cmake --build .
 ```
+
+## Flash
+
+```bash
+cmake -DAVRDUDE_PORT=/dev/cu.usbserial-XXXX ..
+cmake --build . --target flash
+```
