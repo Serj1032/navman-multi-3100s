@@ -4,7 +4,7 @@
 #include <Arduino.h>
 
 #include "drawable.h"
-#include "color_scheme.h"
+#include "display/color_scheme.h"
 
 class Text : public Drawable
 {

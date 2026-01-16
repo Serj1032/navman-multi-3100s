@@ -1,11 +1,11 @@
 #pragma once
 
 #include "sensors/sensor_gps.h"
+#include "display/widgets/widget.h"
+#include "display/color_scheme.h"
 #include "clock.h"
-#include "color_scheme.h"
 #include "utils.h"
-#include "text.h"
-#include "widget.h"
+#include "display/text.h"
 
 class ClockWidget : public Widget {
 public:

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "drawable.h"
-#include "button.h"
-#include "icon.h"
+#include "display/drawable.h"
+#include "display/button.h"
+#include "display/icons/bitmap_icon.h"
 
 namespace {
     static const uint16_t amout = 4;

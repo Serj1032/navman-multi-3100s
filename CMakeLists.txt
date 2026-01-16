@@ -14,6 +14,7 @@ include(${CMAKE_SOURCE_DIR}/third_party/cmake/lsm303.cmake)
 
 file(GLOB source_file_list
     ${CMAKE_SOURCE_DIR}/sketch/src/*.cpp
+    ${CMAKE_SOURCE_DIR}/sketch/src/screens/*.cpp
 )
 
 set(include_dir_list

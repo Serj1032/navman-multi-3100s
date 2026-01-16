@@ -16,7 +16,7 @@ public:
 
     ~Button() override = default;
 
-    void set_icon(const Icon &icon) {
+    void set_icon(const BitmapIcon &icon) {
         set_visible(true);
         icon_ = icon;
         icon_.set_parent(this);
@@ -71,6 +71,6 @@ private:
     int16_t height_;
     uint16_t radius_ = 8;
     Drawable* content_ = nullptr;
-    Icon icon_;
+    BitmapIcon icon_;
     Text label_;
 };

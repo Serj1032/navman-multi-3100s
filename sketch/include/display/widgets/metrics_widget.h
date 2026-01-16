@@ -1,9 +1,9 @@
 #pragma once
 
 #include "sensors/sensor_gps.h"
-#include "widget.h"
-#include "color_scheme.h"
-#include "metric_value_widget.h"
+#include "display/widgets/widget.h"
+#include "display/color_scheme.h"
+#include "display/widgets/metric_value_widget.h"
 #include "utils.h"
 
 namespace {

@@ -1,11 +1,11 @@
 #pragma once
 
 #include "sensors/sensor_gps.h"
-#include "widget.h"
-#include "icon.h"
-#include "icons/sattelite.h"
-#include "color_scheme.h"
-#include "text.h"
+#include "display/widgets/widget.h"
+#include "display/icons/bitmap_icon.h"
+#include "display/assets/sattelite.h"
+#include "display/color_scheme.h"
+#include "display/text.h"
 #include "utils.h"
 
 class SatelliteWidget : public Widget {
@@ -56,6 +56,6 @@ private:
     GPS& gps_ = GPS::get_instance();
 
     Text sv_count_text_;
-    Icon satellite_icon_;
+    BitmapIcon satellite_icon_;
     Text mode_text_;
 };

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "drawable.h"
-#include "color_scheme.h"
+#include "display/drawable.h"
+#include "display/color_scheme.h"
 #include "utils.h"
 
 

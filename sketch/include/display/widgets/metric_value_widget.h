@@ -1,7 +1,7 @@
 #pragma once
 
-#include "widget.h"
-#include "text.h"
+#include "display/widgets/widget.h"
+#include "display/text.h"
 #include "utils.h"
 
 class MetricValueWidget : public Widget {

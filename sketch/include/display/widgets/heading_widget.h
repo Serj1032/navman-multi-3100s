@@ -2,10 +2,10 @@
 
 #include "sensors/sensor_gps.h"
 #include "sensors/sensor_compass.h"
-#include "widget.h"
-#include "boat_icon.h"
-#include "arrow_icon.h"
-#include "color_scheme.h"
+#include "display/widgets/widget.h"
+#include "display/icons/boat_icon.h"
+#include "display/icons/arrow_icon.h"
+#include "display/color_scheme.h"
 
 namespace {
     static const float ANGLE_RESOLUTION = 3.0f; // degrees

@@ -2,27 +2,27 @@
 
 #pragma once
 
-#include "drawable.h"
+#include "display/drawable.h"
 
-class Icon : public Drawable
+class BitmapIcon : public Drawable
 {
 public:
 
-    Icon() : Icon(0, 0, nullptr, 0, 0) {
+    BitmapIcon() : BitmapIcon(0, 0, nullptr, 0, 0) {
     }
 
-    Icon(uint16_t x, uint16_t y, const uint8_t *bitmap, uint16_t w, uint16_t h) : Drawable(x, y), bitmap_(bitmap), w_(w), h_(h)
+    BitmapIcon(uint16_t x, uint16_t y, const uint8_t *bitmap, uint16_t w, uint16_t h) : Drawable(x, y), bitmap_(bitmap), w_(w), h_(h)
     {
         set_color(ColorScheme::get_instance().default_icon_color());
     }
-    virtual ~Icon() = default;
+    virtual ~BitmapIcon() = default;
 
-    Icon(const Icon &other) : Drawable(other.x_, other.y_), bitmap_(other.bitmap_), w_(other.w_), h_(other.h_)
+    BitmapIcon(const BitmapIcon &other) : Drawable(other.x_, other.y_), bitmap_(other.bitmap_), w_(other.w_), h_(other.h_)
     {
         set_color(other.color_);
     }
 
-    Icon& operator=(const Icon &other)
+    BitmapIcon& operator=(const BitmapIcon &other)
     {
         if (this != &other)
         {

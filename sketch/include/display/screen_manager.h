@@ -1,9 +1,9 @@
 #pragma once
 
 #include "sensors/sensor_gps.h"
-#include "screen.h"
-#include "display.h"
-#include "color_scheme.h"
+#include "display/screen.h"
+#include "display/display.h"
+#include "display/color_scheme.h"
 
 enum class ScreenType : uint8_t
 {

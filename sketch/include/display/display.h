@@ -4,7 +4,7 @@
 // https://arduinogetstarted.com/tutorials/arduino-tft-lcd-touch-screen-display
 
 #include <DIYables_TFT_Touch_Shield.h>
-#include "color_scheme.h"
+#include "display/color_scheme.h"
 
 #define WIDTH 480
 #define HEIGHT 320
