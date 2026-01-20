@@ -1,6 +1,6 @@
 #pragma once
 
-#include "sensors/sensor_gps.h"
+#include "sensor_manager.h"
 #include "display/color_scheme.h"
 
 class Time {
@@ -56,6 +56,7 @@ public:
 
     void init(int8_t time_zone = 0) {
         time_zone_ = time_zone;
+        gps_ = SensorManager::get_instance().get_sensor<GPS>();
     }
 
     void set_time_zone(int8_t tz) {
@@ -67,7 +68,11 @@ public:
     }
 
     void process() {
-        time_.set_time(gps_.get_utc_time());
+        if (!gps_) {
+            return;
+        }
+        const GpsSolution* sol = gps_->get_solution();
+        time_.set_time(sol->utc_time_);
 
         uint8_t hr = time_.get_hours(time_zone_);
         uint8_t min = time_.get_minutes();
@@ -89,7 +94,7 @@ private:
     Clock() :  time_(0), time_zone_(0) {}
 
 private:
-    GPS& gps_ = GPS::get_instance();
+    GPS* gps_ = nullptr;
 
     Time time_;
     int8_t time_zone_;

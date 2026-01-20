@@ -1,6 +1,6 @@
 #pragma once
 
-#include "sensors/sensor_gps.h"
+#include "sensor_manager.h"
 #include "display/widgets/widget.h"
 #include "display/color_scheme.h"
 #include "display/widgets/metric_value_widget.h"
@@ -43,7 +43,8 @@ public:
         water_speed_(x_, y_ + 80, WATER_SPEED, " --.-", SPEED_UNIT_STRINGS[static_cast<int>(speed_unit_)]),
         depth_(x_, y_ + 160, DEPTH, "---.-", "m")
     {
-        set_color(ColorScheme::get_instance().header_color());      
+        set_color(ColorScheme::get_instance().header_color());    
+        gps_ = SensorManager::get_instance().get_sensor<GPS>();
     };
     
     ~MetricsWidget() = default;
@@ -62,10 +63,16 @@ public:
 
 
     void update() override {
-        if (!gps_.is_valid()) {
+        if (!gps_) {
+            return;
+        }
+
+        const GpsSolution* sol = gps_->get_solution();
+
+        if (!sol->is_valid_) {
             ground_speed_.set_value(" --.-");
         } else {
-            float speed_mps = gps_.get_speed_knots() / 1.94384f;
+            float speed_mps = sol->speed_knots_ / 1.94384f;
             if (speed_mps < -MAX_SPEED_MPS) {
                 speed_mps = -MAX_SPEED_MPS;
             } else if (speed_mps > MAX_SPEED_MPS) {
@@ -95,7 +102,7 @@ private:
     }
 
 private:
-    GPS& gps_ = GPS::get_instance();
+    GPS* gps_ = nullptr;
 
     SpeedUnit speed_unit_;
     

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "sensors/sensor_gps.h"
 #include "display/widgets/widget.h"
 #include "display/color_scheme.h"
 #include "clock.h"

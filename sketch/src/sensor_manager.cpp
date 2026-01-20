@@ -14,7 +14,7 @@ void SensorManager::process_sensors() {
 }
 
 template <>
-inline Compass* SensorManager::get_sensor<Compass>() {
+Compass* SensorManager::get_sensor<Compass>() {
     if (!compass.is_available()) {
         return nullptr;
     }
@@ -22,7 +22,7 @@ inline Compass* SensorManager::get_sensor<Compass>() {
 }
 
 template <>
-inline GPS* SensorManager::get_sensor<GPS>() {
+GPS* SensorManager::get_sensor<GPS>() {
     if (!gps.is_available()) {
         return nullptr;
     }

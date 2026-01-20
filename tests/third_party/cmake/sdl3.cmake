@@ -37,6 +37,10 @@ if(APPLE)
     find_library(METAL_LIBRARY Metal)
     find_library(COREHAPTICS_LIBRARY CoreHaptics)
     find_library(GAMECONTROLLER_LIBRARY GameController)
+    find_library(AVFOUNDATION_LIBRARY AVFoundation)
+    find_library(COREMEDIA_LIBRARY CoreMedia)
+    find_library(QUARTZCORE_LIBRARY QuartzCore)
+    find_library(UNIFORMTYPEIDENTIFIERS_LIBRARY UniformTypeIdentifiers)
     
     set(SDL3_SYSTEM_LIBS
         ${COCOA_LIBRARY}
@@ -51,6 +55,10 @@ if(APPLE)
         ${METAL_LIBRARY}
         ${COREHAPTICS_LIBRARY}
         ${GAMECONTROLLER_LIBRARY}
+        ${AVFOUNDATION_LIBRARY}
+        ${COREMEDIA_LIBRARY}
+        ${QUARTZCORE_LIBRARY}
+        ${UNIFORMTYPEIDENTIFIERS_LIBRARY}
     )
     
     target_link_libraries(SDL3::SDL3 INTERFACE ${SDL3_SYSTEM_LIBS})

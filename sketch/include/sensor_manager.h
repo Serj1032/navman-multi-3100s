@@ -23,7 +23,7 @@ private:
 };
 
 template <>
-inline Compass* SensorManager::get_sensor<Compass>();
+Compass* SensorManager::get_sensor<Compass>();
 
 template <>
-inline GPS* SensorManager::get_sensor<GPS>();
+GPS* SensorManager::get_sensor<GPS>();

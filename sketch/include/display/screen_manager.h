@@ -1,6 +1,5 @@
 #pragma once
 
-#include "sensors/sensor_gps.h"
 #include "display/screen.h"
 #include "display/display.h"
 #include "display/color_scheme.h"
@@ -41,7 +40,6 @@ private:
     void change_screen();
 
 private:
-    GPS& gps_ = GPS::get_instance();
     Display *display_ = nullptr;
     ScreenType current_screen_type_;
     ScreenType next_screen_type_;

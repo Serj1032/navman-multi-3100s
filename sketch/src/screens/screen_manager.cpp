@@ -2,13 +2,12 @@
 
 ScreenManager::ScreenManager() :
     display_(nullptr),
-    current_screen_(nullptr),
     current_screen_type_(ScreenType::NONE),
     next_screen_type_(ScreenType::WELCOME),
+    current_screen_(nullptr),
     is_day_mode_(ColorScheme::get_instance().is_day_mode())
 {
 }
-
 
 void ScreenManager::init(Display *display)
 {

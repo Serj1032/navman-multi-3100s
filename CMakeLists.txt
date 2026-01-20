@@ -10,12 +10,13 @@ if (ARDUINO_TOOLCHAIN)
     include(${CMAKE_SOURCE_DIR}/cmake/arduino_toolchain.cmake)
     # include(${CMAKE_SOURCE_DIR}/third_party/cmake/adafruit_gfx.cmake)
     # include(${CMAKE_SOURCE_DIR}/third_party/cmake/adafruit_busio.cmake)
-    # include(${CMAKE_SOURCE_DIR}/third_party/cmake/diyables_tft_touch_shield.cmake)
+    include(${CMAKE_SOURCE_DIR}/third_party/cmake/diyables_tft_touch_shield.cmake)
     include(${CMAKE_SOURCE_DIR}/third_party/cmake/lsm303.cmake)
 elseif(HOST_TOOLCHAIN)
     # Use mock libraries for host builds
     include(${CMAKE_SOURCE_DIR}/tests/third_party/cmake/lsm303.cmake)
     include(${CMAKE_SOURCE_DIR}/tests/third_party/cmake/sdl3.cmake)
+    add_subdirectory(${CMAKE_SOURCE_DIR}/tests/Arduino/libraries/DIYables_TFT_Touch_Shield)
 endif()
 
 set(source_file_list
@@ -23,6 +24,11 @@ set(source_file_list
     ${CMAKE_SOURCE_DIR}/sketch/src/protocols/nmea_protocol.cpp
     ${CMAKE_SOURCE_DIR}/sketch/src/sensors/compass.cpp
     ${CMAKE_SOURCE_DIR}/sketch/src/sensors/gps.cpp
+    ${CMAKE_SOURCE_DIR}/sketch/src/color_scheme.cpp
+    ${CMAKE_SOURCE_DIR}/sketch/src/screens/screen_manager.cpp
+    ${CMAKE_SOURCE_DIR}/sketch/src/screens/screen_welcome.cpp
+    ${CMAKE_SOURCE_DIR}/sketch/src/screens/screen_dashboard.cpp
+    ${CMAKE_SOURCE_DIR}/sketch/src/screen_log.cpp
 )
 
 set(include_dir_list
@@ -56,13 +62,8 @@ target_include_directories(navman-multi-3100s PRIVATE
 target_link_libraries(navman-multi-3100s PRIVATE 
     core
     lsm303
-    # diyables_tft_touch_shield
+    diyables_tft_touch_shield
 )
-
-# Link SDL3 for host builds
-if(HOST_TOOLCHAIN AND TARGET SDL3::SDL3)
-    target_link_libraries(navman-multi-3100s PRIVATE SDL3::SDL3)
-endif()
 
 # Set linker options (toolchain-specific)
 if(ARDUINO_TOOLCHAIN)

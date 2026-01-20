@@ -38,6 +38,11 @@ typedef bool boolean;
 #define FALLING 2
 #define RISING 3
 
+#define PROGMEM
+
+// Flash string helper - on host just return the string as-is
+#define F(string_literal) (string_literal)
+
 // Mock Arduino functions (for compilation only)
 unsigned long millis();
 unsigned long micros();
@@ -49,6 +54,24 @@ void digitalWrite(uint8_t pin, uint8_t val);
 int digitalRead(uint8_t pin);
 int analogRead(uint8_t pin);
 void analogWrite(uint8_t pin, int val);
+
+// Interrupts mock functions
+static inline void noInterrupts(){}
+static inline void interrupts(){}
+
+// Interrupt pin mapping - for host build, just return the pin number
+#define digitalPinToInterrupt(p) (p)
+
+// Interrupt attachment - mock for host build
+typedef void (*voidFuncPtr)(void);
+static inline void attachInterrupt(uint8_t interruptNum, voidFuncPtr userFunc, int mode) {
+    (void)interruptNum;
+    (void)userFunc;
+    (void)mode;
+}
+static inline void detachInterrupt(uint8_t interruptNum) {
+    (void)interruptNum;
+}
 
 // Math functions
 #define abs(x) ((x)>0?(x):-(x))
