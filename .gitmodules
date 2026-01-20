@@ -13,3 +13,6 @@
 [submodule "third_party/lsm303-arduino"]
 	path = third_party/lsm303-arduino
 	url = https://github.com/pololu/lsm303-arduino.git
+[submodule "tests/third_party/sdl"]
+	path = tests/third_party/sdl
+	url = https://github.com/libsdl-org/SDL.git

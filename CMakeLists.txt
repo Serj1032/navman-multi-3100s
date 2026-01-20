@@ -15,6 +15,7 @@ if (ARDUINO_TOOLCHAIN)
 elseif(HOST_TOOLCHAIN)
     # Use mock libraries for host builds
     include(${CMAKE_SOURCE_DIR}/tests/third_party/cmake/lsm303.cmake)
+    include(${CMAKE_SOURCE_DIR}/tests/third_party/cmake/sdl3.cmake)
 endif()
 
 set(source_file_list
@@ -57,6 +58,11 @@ target_link_libraries(navman-multi-3100s PRIVATE
     lsm303
     # diyables_tft_touch_shield
 )
+
+# Link SDL3 for host builds
+if(HOST_TOOLCHAIN AND TARGET SDL3::SDL3)
+    target_link_libraries(navman-multi-3100s PRIVATE SDL3::SDL3)
+endif()
 
 # Set linker options (toolchain-specific)
 if(ARDUINO_TOOLCHAIN)

@@ -1,0 +1,6 @@
+# Ignore built SDL3 library artifacts
+lib/
+include/
+share/
+cmake/
+bin/
