@@ -52,13 +52,15 @@ target_link_libraries(navman-multi-3100s PRIVATE
     # diyables_tft_touch_shield
 )
 
-# Set linker options for AVR
-target_link_options(navman-multi-3100s PRIVATE
-    -mmcu=atmega2560
-    -Wl,--gc-sections
-    -flto
-    -fuse-linker-plugin
-)
+# Set linker options (toolchain-specific)
+if(ARDUINO_TOOLCHAIN)
+    target_link_options(navman-multi-3100s PRIVATE
+        -mmcu=atmega2560
+        -Wl,--gc-sections
+        -flto
+        -fuse-linker-plugin
+    )
+endif()
 
 # Generate hex and bin files
 arduino_executable(navman-multi-3100s)
