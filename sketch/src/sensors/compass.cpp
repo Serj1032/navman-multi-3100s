@@ -4,12 +4,17 @@
 
 #include "logger.h"
 
-void Compass::initialize() {
+int Compass::probe() {
     LOG_DEBUG("Initializing Compass sensor");
 
     // TODO: compass may block booting process
     Wire.begin();
-    compass.init();
+    if (compass.init() == false) {
+        LOG_ERROR("Could not find a valid LSM303 compass sensor, check wiring!");
+        return -1;
+    } else {
+        LOG_INFO("LSM303 compass detected");
+    }
     compass.enableDefault();
 
     /*
@@ -21,9 +26,14 @@ void Compass::initialize() {
     compass.m_max = (LSM303::vector<int16_t>){+32767, +32767, +32767};
 
     ts_ = millis();
+    return 0;
 }
 
 void Compass::process() {
+    if (!is_available()) {
+        return;
+    }
+    
     uint32_t now = millis();
     if (now - ts_ >= 500) { // Update heading every 500 ms
         compass.read();

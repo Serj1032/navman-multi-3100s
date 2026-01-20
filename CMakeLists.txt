@@ -10,20 +10,17 @@ include(${CMAKE_SOURCE_DIR}/cmake/arduino_library.cmake)
 # include(${CMAKE_SOURCE_DIR}/third_party/cmake/diyables_tft_touch_shield.cmake)
 include(${CMAKE_SOURCE_DIR}/third_party/cmake/lsm303.cmake)
 
-# file(GLOB source_file_list
-#     ${CMAKE_SOURCE_DIR}/sketch/src/*.cpp
-#     ${CMAKE_SOURCE_DIR}/sketch/src/screens/*.cpp
-#     ${CMAKE_SOURCE_DIR}/sketch/src/sensors/*.cpp
-# )
 
 set(source_file_list
     ${CMAKE_SOURCE_DIR}/sketch/src/sensor_manager.cpp
+    ${CMAKE_SOURCE_DIR}/sketch/src/protocols/nmea_protocol.cpp
     ${CMAKE_SOURCE_DIR}/sketch/src/sensors/compass.cpp
+    ${CMAKE_SOURCE_DIR}/sketch/src/sensors/gps.cpp
 )
 
 set(include_dir_list
     ${CMAKE_SOURCE_DIR}/sketch/include
-    ${CMAKE_SOURCE_DIR}/sketch/src/sensors/
+    ${CMAKE_SOURCE_DIR}/sketch/src
 )
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -69,7 +66,7 @@ arduino_executable(navman-multi-3100s)
 # AVR flash configuration
 set(AVRDUDE_PATH "$ENV{HOME}/Library/Arduino15/packages/arduino/tools/avrdude/6.3.0-arduino17/bin/avrdude" CACHE STRING "Path to avrdude binary")
 set(AVRDUDE_CONFIG "$ENV{HOME}/Library/Arduino15/packages/arduino/tools/avrdude/6.3.0-arduino17/etc/avrdude.conf" CACHE STRING "Path to avrdude config")
-set(AVRDUDE_PORT "/dev/cu.usbserial-1420" CACHE STRING "Serial port for flashing")
+set(AVRDUDE_PORT "/dev/cu.usbserial-1140" CACHE STRING "Serial port for flashing")
 set(AVRDUDE_PROGRAMMER "wiring" CACHE STRING "Programmer type (wiring for ATmega2560)")
 set(AVRDUDE_BAUD "115200" CACHE STRING "Baud rate for flashing")
 

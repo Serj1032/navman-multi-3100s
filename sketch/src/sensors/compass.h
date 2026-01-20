@@ -9,8 +9,6 @@ public:
     Compass() = default;
     ~Compass() = default;
 
-    void initialize();
-
     int get_heading(float* heading) const {
         *heading = heading_;
         return 0;
@@ -21,6 +19,8 @@ public:
 private:
     Compass(const Compass&) = delete;
     Compass& operator=(const Compass&) = delete;
+
+    int probe() override;
 
 private:
     uint32_t ts_{0};

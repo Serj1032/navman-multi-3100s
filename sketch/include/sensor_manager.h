@@ -1,10 +1,7 @@
 #pragma once
 
-// enum class SensorType : uint8_t {
-//     NONE = 0,
-//     GPS,
-//     COMPASS,
-// };
+#include "sensors/compass.h"
+#include "sensors/gps.h"
 
 class SensorManager {
 public:
@@ -17,7 +14,16 @@ public:
 
     void process_sensors();
 
+    template <typename T>
+    T* get_sensor();
+
 private: 
     SensorManager() = default;
     ~SensorManager() = default;
 };
+
+template <>
+inline Compass* SensorManager::get_sensor<Compass>();
+
+template <>
+inline GPS* SensorManager::get_sensor<GPS>();
