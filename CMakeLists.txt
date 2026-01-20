@@ -5,11 +5,17 @@ project(navman-multi-3100s)
 include(${CMAKE_SOURCE_DIR}/cmake/arduino_utils.cmake)
 include(${CMAKE_SOURCE_DIR}/cmake/arduino_core.cmake)
 include(${CMAKE_SOURCE_DIR}/cmake/arduino_library.cmake)
-# include(${CMAKE_SOURCE_DIR}/third_party/cmake/adafruit_gfx.cmake)
-# include(${CMAKE_SOURCE_DIR}/third_party/cmake/adafruit_busio.cmake)
-# include(${CMAKE_SOURCE_DIR}/third_party/cmake/diyables_tft_touch_shield.cmake)
-include(${CMAKE_SOURCE_DIR}/third_party/cmake/lsm303.cmake)
 
+if (ARDUINO_TOOLCHAIN)
+    include(${CMAKE_SOURCE_DIR}/cmake/arduino_toolchain.cmake)
+    # include(${CMAKE_SOURCE_DIR}/third_party/cmake/adafruit_gfx.cmake)
+    # include(${CMAKE_SOURCE_DIR}/third_party/cmake/adafruit_busio.cmake)
+    # include(${CMAKE_SOURCE_DIR}/third_party/cmake/diyables_tft_touch_shield.cmake)
+    include(${CMAKE_SOURCE_DIR}/third_party/cmake/lsm303.cmake)
+elseif(HOST_TOOLCHAIN)
+    # Use mock libraries for host builds
+    include(${CMAKE_SOURCE_DIR}/tests/third_party/cmake/lsm303.cmake)
+endif()
 
 set(source_file_list
     ${CMAKE_SOURCE_DIR}/sketch/src/sensor_manager.cpp
