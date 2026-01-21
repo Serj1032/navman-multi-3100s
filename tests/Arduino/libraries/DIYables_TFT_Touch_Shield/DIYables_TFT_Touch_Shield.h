@@ -17,6 +17,9 @@ public:
     void setRotation(uint8_t rotation);
     void fillScreen(uint16_t color);
     
+    // Process SDL events to keep window responsive
+    void processEvents();
+    
     // Text methods
     void setTextColor(uint16_t color);
     void setTextSize(uint8_t size);
@@ -35,6 +38,8 @@ private:
 #ifdef HOST_BUILD
     SDL_Window* window_;
     SDL_Renderer* renderer_;
+    SDL_Texture* framebuffer_; // Persistent framebuffer texture
+    SDL_Texture* font_atlas_;  // Pre-rendered font characters
     int16_t cursor_x_;
     int16_t cursor_y_;
     uint16_t text_color_;
@@ -46,6 +51,7 @@ private:
     // Helper to convert RGB565 to RGB888
     void color565ToRGB(uint16_t color, uint8_t& r, uint8_t& g, uint8_t& b);
     void setSDLColor(uint16_t color);
+    void createFontAtlas();
 #endif
 };
 
