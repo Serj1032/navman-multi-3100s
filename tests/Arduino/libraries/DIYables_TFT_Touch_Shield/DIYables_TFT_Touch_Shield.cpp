@@ -106,15 +106,12 @@ static const uint8_t font5x7[][5] = {
 };
 
 DIYables_TFT_ILI9488_Shield::DIYables_TFT_ILI9488_Shield() 
-    : window_(nullptr), renderer_(nullptr), framebuffer_(nullptr), font_atlas_(nullptr),
+    : window_(nullptr), renderer_(nullptr), framebuffer_(nullptr),
       cursor_x_(0), cursor_y_(0), text_color_(0xFFFF), text_size_(1), rotation_(0),
       screen_width_(480), screen_height_(320) {
 }
 
 DIYables_TFT_ILI9488_Shield::~DIYables_TFT_ILI9488_Shield() {
-    if (font_atlas_) {
-        SDL_DestroyTexture(font_atlas_);
-    }
     if (framebuffer_) {
         SDL_DestroyTexture(framebuffer_);
     }
@@ -163,13 +160,10 @@ void DIYables_TFT_ILI9488_Shield::begin() {
     
     // Set framebuffer as render target and clear it
     SDL_SetRenderTarget(renderer_, framebuffer_);
-    SDL_SetRenderDrawBlendMode(renderer_, SDL_BLENDMODE_BLEND);
+    SDL_SetRenderDrawBlendMode(renderer_, SDL_BLENDMODE_NONE);
     setSDLColor(0x0000); // Black
     SDL_RenderClear(renderer_);
     SDL_SetRenderTarget(renderer_, nullptr); // Back to window
-    
-    // Create font atlas
-    createFontAtlas();
 }
 
 void DIYables_TFT_ILI9488_Shield::setRotation(uint8_t rotation) {
@@ -201,8 +195,6 @@ void DIYables_TFT_ILI9488_Shield::fillScreen(uint16_t color) {
     if (!renderer_ || !framebuffer_) return;
     SDL_SetRenderTarget(renderer_, framebuffer_);
     
-    // Temporarily disable blending to fully replace all pixels
-    SDL_SetRenderDrawBlendMode(renderer_, SDL_BLENDMODE_NONE);
     setSDLColor(color);
     
     // Clear the entire framebuffer
@@ -212,58 +204,6 @@ void DIYables_TFT_ILI9488_Shield::fillScreen(uint16_t color) {
     SDL_FRect fullscreen = {0.0f, 0.0f, (float)screen_width_, (float)screen_height_};
     SDL_RenderFillRect(renderer_, &fullscreen);
     
-    // Restore blending for subsequent drawing operations
-    SDL_SetRenderDrawBlendMode(renderer_, SDL_BLENDMODE_BLEND);
-    SDL_SetRenderTarget(renderer_, nullptr);
-}
-
-void DIYables_TFT_ILI9488_Shield::createFontAtlas() {
-    // Create atlas texture with 2x resolution: 16 chars wide x 6 chars tall = 95 printable ASCII chars
-    const int scale = 2; // Resolution multiplier
-    const int atlas_width = 16 * 6 * scale;  // 16 columns * 6 pixels per char * scale
-    const int atlas_height = 6 * 8 * scale;  // 6 rows * 8 pixels per char * scale
-    
-    font_atlas_ = SDL_CreateTexture(renderer_,
-                                    SDL_PIXELFORMAT_RGBA8888,
-                                    SDL_TEXTUREACCESS_TARGET,
-                                    atlas_width, atlas_height);
-    if (!font_atlas_) return;
-    
-    // Set atlas as render target
-    SDL_SetRenderTarget(renderer_, font_atlas_);
-    SDL_SetTextureBlendMode(font_atlas_, SDL_BLENDMODE_BLEND);
-    
-    // Clear atlas with transparent background
-    SDL_SetRenderDrawColor(renderer_, 0, 0, 0, 0);
-    SDL_RenderClear(renderer_);
-    
-    // Render all characters in white at higher resolution
-    SDL_SetRenderDrawColor(renderer_, 255, 255, 255, 255);
-    
-    for (int c = 0; c < 95; c++) {  // 95 printable ASCII chars (32-126)
-        int atlas_x = (c % 16) * 6 * scale;
-        int atlas_y = (c / 16) * 8 * scale;
-        
-        const uint8_t* glyph = font5x7[c];
-        
-        // Render character bitmap at higher resolution
-        for (int col = 0; col < 5; col++) {
-            uint8_t column_data = glyph[col];
-            for (int row = 0; row < 7; row++) {
-                if (column_data & (1 << row)) {
-                    SDL_FRect pixel = {
-                        (float)(atlas_x + col * scale),
-                        (float)(atlas_y + row * scale),
-                        (float)scale,
-                        (float)scale
-                    };
-                    SDL_RenderFillRect(renderer_, &pixel);
-                }
-            }
-        }
-    }
-    
-    // Restore render target
     SDL_SetRenderTarget(renderer_, nullptr);
 }
 
@@ -301,24 +241,15 @@ void DIYables_TFT_ILI9488_Shield::setCursor(int16_t x, int16_t y) {
 }
 
 void DIYables_TFT_ILI9488_Shield::print(const char* text) {
-    if (!renderer_ || !framebuffer_ || !font_atlas_ || !text) return;
+    if (!renderer_ || !framebuffer_ || !text) return;
     
     SDL_SetRenderTarget(renderer_, framebuffer_);
-    
-    // Get current color for tinting
-    uint8_t r, g, b;
-    color565ToRGB(text_color_, r, g, b);
-    SDL_SetTextureColorMod(font_atlas_, r, g, b);
-    
-    // Disable blending for the font atlas to ensure solid pixel replacement
-    // This allows "erasing" text by drawing it in the background color
-    SDL_SetTextureBlendMode(font_atlas_, SDL_BLENDMODE_NONE);
+    setSDLColor(text_color_);
     
     int16_t x = cursor_x_;
     int16_t y = cursor_y_;
     const int char_width = 6;
     const int char_height = 8;
-    const int scale = 2; // Match the atlas scale
     
     while (*text) {
         if (*text == '\n') {
@@ -333,26 +264,28 @@ void DIYables_TFT_ILI9488_Shield::print(const char* text) {
         if (c < 32 || c > 126) c = 32;
         int char_index = c - 32;
         
-        // Calculate atlas source rect (at higher resolution)
-        int atlas_x = (char_index % 16) * char_width * scale;
-        int atlas_y = (char_index / 16) * char_height * scale;
+        const uint8_t* glyph = font5x7[char_index];
         
-        SDL_FRect src = {(float)atlas_x, (float)atlas_y, (float)(5 * scale), (float)(7 * scale)};
-        SDL_FRect dst = {
-            (float)x,
-            (float)y,
-            (float)(5 * text_size_),
-            (float)(7 * text_size_)
-        };
-        
-        SDL_RenderTexture(renderer_, font_atlas_, &src, &dst);
+        // Draw character pixel by pixel
+        for (int col = 0; col < 5; col++) {
+            uint8_t column_data = glyph[col];
+            for (int row = 0; row < 7; row++) {
+                if (column_data & (1 << row)) {
+                    // Draw scaled pixel
+                    SDL_FRect pixel = {
+                        (float)(x + col * text_size_),
+                        (float)(y + row * text_size_),
+                        (float)text_size_,
+                        (float)text_size_
+                    };
+                    SDL_RenderFillRect(renderer_, &pixel);
+                }
+            }
+        }
         
         x += char_width * text_size_;
         text++;
     }
-    
-    // Restore blending mode for font atlas
-    SDL_SetTextureBlendMode(font_atlas_, SDL_BLENDMODE_BLEND);
     
     SDL_SetRenderTarget(renderer_, nullptr);
 }

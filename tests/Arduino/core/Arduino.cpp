@@ -103,8 +103,13 @@ bool main_loop_running = true;
 
 int main() {
     setup();
+    unsigned long loop_start = millis();
     while (main_loop_running) {
-        loop();
+        unsigned long current_time = millis();
+        if (current_time - loop_start >= 100) { // 1 ms tick
+            loop_start = current_time;
+            loop();
+        }
     }
     return 0;
 }
