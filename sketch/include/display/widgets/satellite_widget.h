@@ -6,6 +6,7 @@
 #include "display/assets/sattelite.h"
 #include "display/color_scheme.h"
 #include "display/text.h"
+#include "logger.h"
 #include "utils.h"
 
 class SatelliteWidget : public Widget {
@@ -19,6 +20,7 @@ public:
             mode_text_("", x_ + 60, y_ + 5, 2)
     {
         set_color(ColorScheme::get_instance().header_color());
+        gps_ = SensorManager::get_instance().get_sensor<GPS>();
     };
     
     ~SatelliteWidget() = default;
@@ -43,7 +45,7 @@ public:
 
         uint16_t sv_count = sol->sv_count_;
         sv_count_text_.set_text(padStart(String(sv_count), 2, ' '));
-    
+        
         if (sol->is_valid_) {
             satellite_icon_.set_color(ColorScheme::get_instance().default_icon_color());
         } else {

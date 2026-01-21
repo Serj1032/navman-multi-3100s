@@ -63,11 +63,8 @@ public:
     
         if (compass_ != nullptr) {
             float heading = 0.0f;
-            static float step = 1.0f;
             if (compass_->get_heading(&heading) == 0) {
-                LOG_DEBUG("Compass heading: " + String(heading));
-                boat_.set_angle(heading + step);
-                step += ANGLE_RESOLUTION;
+                boat_.set_angle(heading);
             }
         }
 
