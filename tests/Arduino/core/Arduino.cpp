@@ -99,9 +99,11 @@ long random(long howsmall, long howbig) {
     return random(diff) + howsmall;
 }
 
+bool main_loop_running = true;
+
 int main() {
     setup();
-    while (true) {
+    while (main_loop_running) {
         loop();
     }
     return 0;

@@ -59,6 +59,10 @@ public:
   void clear() {
     TFT_display.fillScreen(color_scheme_.background_color());
   }
+  
+  void process() {
+    TFT_display.processEvents();
+  }
 
 private:
   Display() : color_scheme_(ColorScheme::get_instance()) {}

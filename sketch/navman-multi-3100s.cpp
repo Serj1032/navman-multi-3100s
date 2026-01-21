@@ -27,6 +27,7 @@ void loop(void) {
   Keyboard::get_instance().process();
   Clock::get_instance().process();
   // Navman::get_instance().process();
+  Display::get_instance().process();
   ScreenManager::get_instance().process();
   // Cli::get_instance().process();
 }
