@@ -1,12 +1,11 @@
 #pragma once
 
-// #include "sensors/sensor_gps.h"
-// #include "sensors/sensor_compass.h"
 #include "sensor_manager.h"
 #include "display/widgets/widget.h"
 #include "display/icons/boat_icon.h"
 #include "display/icons/arrow_icon.h"
 #include "display/color_scheme.h"
+#include "logger.h"
 
 namespace {
     static const float ANGLE_RESOLUTION = 3.0f; // degrees
@@ -23,6 +22,9 @@ public:
     {
         set_color(ColorScheme::get_instance().header_color());
         gps_arrow_.set_visible(false);
+
+        gps_ = SensorManager::get_instance().get_sensor<GPS>();
+        compass_ = SensorManager::get_instance().get_sensor<Compass>();
     };
     
     ~HeadingWidget() = default;
@@ -41,21 +43,33 @@ public:
     }
 
     void update() override {
-        // if (gps_.is_course_valid()) {
-        //     gps_arrow_.set_angle(gps_.get_course());
+        if (gps_ != nullptr) {
+            const GpsSolution* sol = gps_->get_solution();
 
-        //     uint16_t arrow_length = get_arrow_length();
-        //     if (arrow_length == 0) {
-        //         gps_arrow_.set_visible(false);
-        //     } else {
-        //         gps_arrow_.set_visible(true);
-        //         gps_arrow_.set_length(arrow_length);
-        //     }
-        // } else {
-        //     gps_arrow_.set_visible(false);
-        // }
-
-        // boat_.set_angle(compass_.get_heading());
+            if (sol->is_valid_ && sol->course_is_valid_) {
+                gps_arrow_.set_angle(sol->course_);
+    
+                uint16_t arrow_length = get_arrow_length();
+                if (arrow_length == 0) {
+                    gps_arrow_.set_visible(false);
+                } else {
+                    gps_arrow_.set_visible(true);
+                    gps_arrow_.set_length(arrow_length);
+                }
+            } else {
+                gps_arrow_.set_visible(false);
+            }
+        }
+    
+        if (compass_ != nullptr) {
+            float heading = 0.0f;
+            static float step = 1.0f;
+            if (compass_->get_heading(&heading) == 0) {
+                LOG_DEBUG("Compass heading: " + String(heading));
+                boat_.set_angle(heading + step);
+                step += ANGLE_RESOLUTION;
+            }
+        }
 
         if (gps_arrow_.is_dirty() || boat_.is_dirty()) {
             mark_dirty();
@@ -91,8 +105,8 @@ private:
     }
 
 private:
-    // GPS& gps_ = GPS::get_instance();
-    // Compass& compass_ = Compass::get_instance();
+    GPS* gps_ = nullptr;
+    Compass* compass_ = nullptr;
 
     uint16_t radius_{100};
 
