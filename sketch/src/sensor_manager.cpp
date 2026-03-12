@@ -9,8 +9,12 @@ void SensorManager::initialize_sensors() {
 }
 
 void SensorManager::process_sensors() {
-    compass.process();
-    gps.process();
+    if (compass.is_available()) {
+        compass.process();
+    }
+    if (gps.is_available()) {
+        gps.process();
+    }
 }
 
 template <>

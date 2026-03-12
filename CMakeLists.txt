@@ -29,6 +29,7 @@ set(source_file_list
     ${CMAKE_SOURCE_DIR}/sketch/src/screens/screen_welcome.cpp
     ${CMAKE_SOURCE_DIR}/sketch/src/screens/screen_dashboard.cpp
     ${CMAKE_SOURCE_DIR}/sketch/src/screen_log.cpp
+    ${CMAKE_SOURCE_DIR}/sketch/src/keyboard.cpp
 )
 
 set(include_dir_list
