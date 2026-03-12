@@ -2,10 +2,12 @@
 
 static Compass compass;
 static GPS gps;
+static Navman navman;
 
 void SensorManager::initialize_sensors() {
     compass.initialize();
     gps.initialize();
+    navman.initialize();
 }
 
 void SensorManager::process_sensors() {
@@ -14,6 +16,9 @@ void SensorManager::process_sensors() {
     }
     if (gps.is_available()) {
         gps.process();
+    }
+    if (navman.is_available()) {
+        navman.process();
     }
 }
 
@@ -31,4 +36,12 @@ GPS* SensorManager::get_sensor<GPS>() {
         return nullptr;
     }
     return &gps;
+}
+
+template <>
+Navman* SensorManager::get_sensor<Navman>() {
+    if (!navman.is_available()) {
+        return nullptr;
+    }
+    return &navman;
 }

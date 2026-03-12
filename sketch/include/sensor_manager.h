@@ -2,6 +2,7 @@
 
 #include "sensors/compass.h"
 #include "sensors/gps.h"
+#include "sensors/navman.h"
 
 class SensorManager {
 public:
@@ -27,3 +28,6 @@ Compass* SensorManager::get_sensor<Compass>();
 
 template <>
 GPS* SensorManager::get_sensor<GPS>();
+
+template <>
+Navman* SensorManager::get_sensor<Navman>();
