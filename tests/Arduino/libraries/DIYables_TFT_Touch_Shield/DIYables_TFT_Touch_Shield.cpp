@@ -209,6 +209,8 @@ void DIYables_TFT_ILI9488_Shield::fillScreen(uint16_t color) {
 
 extern bool main_loop_running;
 
+#include "MockedGPIO.h"
+
 void DIYables_TFT_ILI9488_Shield::processEvents() {
     if (!window_ || !framebuffer_) return;
     
@@ -217,6 +219,19 @@ void DIYables_TFT_ILI9488_Shield::processEvents() {
         if (event.type == SDL_EVENT_QUIT) {
             main_loop_running = false;
             printf("SDL Quit event received. Exiting main loop.\n");
+        }
+        // Map SDL keyboard keys 1-4 to GPIO button pins
+        else if (event.type == SDL_EVENT_KEY_DOWN && !event.key.repeat) {
+            uint8_t pin = MockedGPIO::sdl_key_to_pin(event.key.key);
+            if (pin != 0xFF) {
+                MockedGPIO::set_pin_value(pin, LOW);  // LOW = pressed (INPUT_PULLUP)
+            }
+        }
+        else if (event.type == SDL_EVENT_KEY_UP) {
+            uint8_t pin = MockedGPIO::sdl_key_to_pin(event.key.key);
+            if (pin != 0xFF) {
+                MockedGPIO::set_pin_value(pin, HIGH);  // HIGH = released (INPUT_PULLUP)
+            }
         }
     }
     
