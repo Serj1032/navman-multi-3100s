@@ -45,6 +45,7 @@ public:
     {
         set_color(ColorScheme::get_instance().header_color());    
         gps_ = SensorManager::get_instance().get_sensor<GPS>();
+        navman_ = SensorManager::get_instance().get_sensor<Navman>();
     };
     
     ~MetricsWidget() = default;
@@ -63,22 +64,46 @@ public:
 
 
     void update() override {
-        if (!gps_) {
-            return;
+        // Ground speed from GPS
+        if (gps_) {
+            const GpsSolution* sol = gps_->get_solution();
+            if (!sol->is_valid_) {
+                ground_speed_.set_value(" --.-");
+            } else {
+                float speed_mps = sol->speed_knots_ / 1.94384f;
+                if (speed_mps < -MAX_SPEED_MPS) {
+                    speed_mps = -MAX_SPEED_MPS;
+                } else if (speed_mps > MAX_SPEED_MPS) {
+                    speed_mps = MAX_SPEED_MPS;
+                }
+                ground_speed_.set_value(convert_speed(speed_mps));
+            }
         }
 
-        const GpsSolution* sol = gps_->get_solution();
-
-        if (!sol->is_valid_) {
-            ground_speed_.set_value(" --.-");
-        } else {
-            float speed_mps = sol->speed_knots_ / 1.94384f;
-            if (speed_mps < -MAX_SPEED_MPS) {
-                speed_mps = -MAX_SPEED_MPS;
-            } else if (speed_mps > MAX_SPEED_MPS) {
-                speed_mps = MAX_SPEED_MPS;
+        // Water speed and depth from Navman
+        if (navman_) {
+            const NavmanSolution* nsol = navman_->get_solution();
+            if (nsol->data_available_ && nsol->water_speed_valid_) {
+                float speed_mps = nsol->water_speed_knots_ / 1.94384f;
+                if (speed_mps < -MAX_SPEED_MPS) {
+                    speed_mps = -MAX_SPEED_MPS;
+                } else if (speed_mps > MAX_SPEED_MPS) {
+                    speed_mps = MAX_SPEED_MPS;
+                }
+                water_speed_.set_value(convert_speed(speed_mps));
+            } else {
+                water_speed_.set_value(" --.-");
             }
-            ground_speed_.set_value(convert_speed(speed_mps));
+
+            if (nsol->data_available_ && nsol->depth_valid_) {
+                float depth = nsol->depth_m_;
+                if (depth > MAX_DEPTH_M) {
+                    depth = MAX_DEPTH_M;
+                }
+                depth_.set_value(depth);
+            } else {
+                depth_.set_value("---.-");
+            }
         }
 
         if (ground_speed_.is_dirty() || water_speed_.is_dirty() || depth_.is_dirty()) {
@@ -103,6 +128,7 @@ private:
 
 private:
     GPS* gps_ = nullptr;
+    Navman* navman_ = nullptr;
 
     SpeedUnit speed_unit_;
     
