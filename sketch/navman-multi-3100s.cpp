@@ -10,7 +10,15 @@
 #include "clock.h"
 // #include "cli.h"
 
+#ifdef HOST_BUILD
+#include "mocked_data_setup.h"
+#endif
+
 void setup() {
+#ifdef HOST_BUILD
+  MockedData::setup();
+#endif
+
   LOG_INFO("Starting Navman Multi 3100s");
   SensorManager::get_instance().initialize_sensors();
   // Cli::get_instance().init();

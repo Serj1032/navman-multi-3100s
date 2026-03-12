@@ -17,6 +17,16 @@ elseif(HOST_TOOLCHAIN)
     include(${CMAKE_SOURCE_DIR}/tests/third_party/cmake/lsm303.cmake)
     include(${CMAKE_SOURCE_DIR}/tests/third_party/cmake/sdl3.cmake)
     add_subdirectory(${CMAKE_SOURCE_DIR}/tests/Arduino/libraries/DIYables_TFT_Touch_Shield)
+
+    # Mocked data sources for host testing
+    set(mocked_data_sources
+        ${CMAKE_SOURCE_DIR}/tests/mocked_data/gps_nmea_data.cpp
+        ${CMAKE_SOURCE_DIR}/tests/mocked_data/mocked_data_setup.cpp
+    )
+    set(mocked_data_includes
+        ${CMAKE_SOURCE_DIR}/tests/mocked_data
+        ${CMAKE_SOURCE_DIR}/tests/Arduino/core
+    )
 endif()
 
 set(source_file_list
@@ -53,10 +63,12 @@ endif()
 add_executable(navman-multi-3100s 
     sketch/navman-multi-3100s.cpp
     ${source_file_list}
+    ${mocked_data_sources}
 )
 
 target_include_directories(navman-multi-3100s PRIVATE
-    ${include_dir_list} 
+    ${include_dir_list}
+    ${mocked_data_includes}
 )
 
 # Link Arduino core library

@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "MockedSerialDataProvider.h"
+
 // Forward declaration
 class String;
 
@@ -20,16 +22,33 @@ public:
         // Mock - does nothing
     }
     
+    /**
+     * Set a mocked data provider for this serial port.
+     * When set, available() and read() will return data from the provider.
+     */
+    void set_data_provider(MockedSerialDataProvider* provider) {
+        data_provider_ = provider;
+    }
+
     int available() {
-        return 0; // Mock - no data available
+        if (data_provider_) {
+            return data_provider_->available();
+        }
+        return 0;
     }
     
     int read() {
-        return -1; // Mock - no data
+        if (data_provider_) {
+            return data_provider_->read();
+        }
+        return -1;
     }
     
     int peek() {
-        return -1; // Mock - no data
+        if (data_provider_) {
+            return data_provider_->peek();
+        }
+        return -1;
     }
     
     void flush() {
@@ -136,6 +155,9 @@ public:
         n += println();
         return n;
     }
+
+private:
+    MockedSerialDataProvider* data_provider_ = nullptr;
 };
 
 extern HardwareSerial Serial;
