@@ -21,6 +21,7 @@ elseif(HOST_TOOLCHAIN)
     # Mocked data sources for host testing
     set(mocked_data_sources
         ${CMAKE_SOURCE_DIR}/tests/mocked_data/gps_nmea_data.cpp
+        ${CMAKE_SOURCE_DIR}/tests/mocked_data/navman_nmea_data.cpp
         ${CMAKE_SOURCE_DIR}/tests/mocked_data/mocked_data_setup.cpp
     )
     set(mocked_data_includes
@@ -34,6 +35,7 @@ set(source_file_list
     ${CMAKE_SOURCE_DIR}/sketch/src/protocols/nmea_protocol.cpp
     ${CMAKE_SOURCE_DIR}/sketch/src/sensors/compass.cpp
     ${CMAKE_SOURCE_DIR}/sketch/src/sensors/gps.cpp
+    ${CMAKE_SOURCE_DIR}/sketch/src/sensors/navman.cpp
     ${CMAKE_SOURCE_DIR}/sketch/src/color_scheme.cpp
     ${CMAKE_SOURCE_DIR}/sketch/src/screens/screen_manager.cpp
     ${CMAKE_SOURCE_DIR}/sketch/src/screens/screen_welcome.cpp
