@@ -2,6 +2,8 @@
 #include <ctype.h>
 
 #define LOG_TAG "NMEA"
+#define LOG_LEVEL LOG_LEVEL_INFO
+
 #include "logger.h"
 
 // NmeaPacket implementation
@@ -62,7 +64,7 @@ void NmeaProtocol::process_char(char c) {
             return;
         }
         buffer_[buffer_idx_] = '\0';
-        LOG_INFO("Rx: " + String(buffer_));
+        LOG_DEBUG("Rx: " + String(buffer_));
         if (is_checksum_valid(buffer_, buffer_idx_)) {
             if (packet_callback_) {
                 NmeaPacket packet(buffer_, buffer_idx_);
