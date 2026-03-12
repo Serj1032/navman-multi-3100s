@@ -61,7 +61,9 @@ public:
   }
   
   void process() {
+  #if defined(HOST_BUILD)
     TFT_display.processEvents();
+  #endif
   }
 
 private:
