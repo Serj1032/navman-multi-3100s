@@ -2,19 +2,30 @@
 
 #include <Wire.h>
 
+#define LOG_TAG "CMPS"
 #include "logger.h"
 
 int Compass::probe() {
     LOG_DEBUG("Initializing Compass sensor");
 
-    // TODO: compass may block booting process
     Wire.begin();
+    Wire.setWireTimeout(3000, true); // Set 3ms timeout and reset on timeout
+    
+    // Set LSM303 timeout to prevent blocking
+    compass.setTimeout(200); // 200ms timeout
+    
     if (compass.init() == false) {
         LOG_ERROR("Could not find a valid LSM303 compass sensor, check wiring!");
         return -1;
-    } else {
-        LOG_INFO("LSM303 compass detected");
     }
+    
+    // Check if timeout occurred during init
+    if (compass.timeoutOccurred()) {
+        LOG_ERROR("LSM303 compass initialization timeout - sensor not responding");
+        return -1;
+    }
+    
+    LOG_INFO("LSM303 compass detected");
     compass.enableDefault();
 
     /*
