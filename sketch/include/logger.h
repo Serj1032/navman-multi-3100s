@@ -4,10 +4,14 @@
 
 #ifdef __DEBUG__
 
-#define LOG_DEBUG(msg) Logger::get_instance().log_debug(msg)
-#define LOG_INFO(msg) Logger::get_instance().log_info(msg)
-#define LOG_WARN(msg) Logger::get_instance().log_warn(msg)
-#define LOG_ERROR(msg) Logger::get_instance().log_error(msg)
+#ifndef LOG_TAG
+#define LOG_TAG "-"
+#endif
+
+#define LOG_DEBUG(msg) Logger::get_instance().log_debug("(" LOG_TAG ") " msg)
+#define LOG_INFO(msg) Logger::get_instance().log_info("(" LOG_TAG ") " msg)
+#define LOG_WARN(msg) Logger::get_instance().log_warn("(" LOG_TAG ") " msg)
+#define LOG_ERROR(msg) Logger::get_instance().log_error("(" LOG_TAG ") " msg)
 
 class Logger {
 public:
