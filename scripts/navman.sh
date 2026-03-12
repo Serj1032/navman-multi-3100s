@@ -35,8 +35,8 @@ function build() {
 
     mkdir -p "$BUILD_DIR"
 
-    cmake -S "$ROOT_DIR" -B "$BUILD_DIR" -DCMAKE_TOOLCHAIN_FILE="$TOOLCHAIN_FILE"
-    cmake --build "$BUILD_DIR" --config "$build_variant"
+    cmake -S "$ROOT_DIR" -B "$BUILD_DIR" -DCMAKE_TOOLCHAIN_FILE="$TOOLCHAIN_FILE" -DCMAKE_BUILD_TYPE="$build_variant"
+    cmake --build "$BUILD_DIR" 
 }
 
 function flash() {
@@ -58,7 +58,6 @@ function flash() {
         shift
     done
 
-    cmake -S "$ROOT_DIR" -B "$BUILD_DIR" -DAVRDUDE_PORT="$port" -DCMAKE_TOOLCHAIN_FILE="$TOOLCHAIN_FILE"
     cmake --build "$BUILD_DIR" --target flash
 }
 
