@@ -6,6 +6,12 @@ CMAKE_DIR="$ROOT_DIR/cmake"
 TOOLCHAIN_FILE="$CMAKE_DIR/arduino_toolchain.cmake"
 BUILD_DIR="$ROOT_DIR/build-arduino"
 
+
+ARDUINO_DIR="$HOME/Library/Arduino15"
+AVRDUDE_PATH="$ARDUINO_DIR/packages/arduino/tools/avrdude/6.3.0-arduino17/bin/avrdude"
+AVRDUDE_CONFIG="$ARDUINO_DIR/packages/arduino/tools/avrdude/6.3.0-arduino17/etc/avrdude.conf"
+
+
 function log_header() {
     echo "=================================================================="
     echo "          $1"
@@ -42,13 +48,20 @@ function build() {
 function flash() {
     log_header "Flashing navman to Arduino..."
 
-    port="/dev/cu.usbserial-140"
+    local port="/dev/cu.usbserial-1140"
+    local baud="115200"
+    local programmer="wiring"
+    local hex_file="$BUILD_DIR/navman-multi-3100s.hex"
 
     while [[ "$1" == -* ]]; do
         case "$1" in
             --port|-p)
                 shift
                 port="$1"
+                ;;
+            --baud|-b)
+                shift
+                baud="$1"
                 ;;
             *)
                 echo "Unknown option: $1"
@@ -58,7 +71,26 @@ function flash() {
         shift
     done
 
-    cmake --build "$BUILD_DIR" --target flash
+    if [ ! -f "$hex_file" ]; then
+        echo "Error: $hex_file not found. Build first with: $0 build-arduino"
+        exit 1
+    fi
+
+    echo "Port:       $port"
+    echo "Baud:       $baud"
+    echo "Programmer: $programmer"
+    echo "Hex file:   $hex_file"
+    echo ""
+
+    "$AVRDUDE_PATH" \
+        -C"$AVRDUDE_CONFIG" \
+        -v \
+        -patmega2560 \
+        -c"$programmer" \
+        -P"$port" \
+        -b"$baud" \
+        -D \
+        -Uflash:w:"$hex_file":i
 }
 
 function clean() {
