@@ -8,6 +8,7 @@ struct GpsSolution {
     uint8_t sv_count_ = 0;
     bool is_valid_ = false;
     uint32_t utc_time_ = 0;
+    bool utc_time_valid_ = false;
     float latitude_ = 0.0f;
     char lat_dir_ = 'N';
     float longitude_ = 0.0f;

@@ -8,6 +8,15 @@ Navman::Navman() : Sensor() {}
 
 int Navman::probe() {
     LOG_DEBUG("Initializing Navman sensor");
+
+    // Navman Multi 3100s has inverted UART data line
+    // Using pin 19 as input and pin 18 as output to create an inverter
+    pinMode(18, OUTPUT);
+    pinMode(19, INPUT); 
+    attachInterrupt(digitalPinToInterrupt(19), []() {
+        digitalWrite(18, !digitalRead(19));
+    }, CHANGE);
+
     NAVMAN_SERIAL.begin(NAVMAN_BAUDRATE);
     nmea_.set_packet_callback(&Navman::nmea_callback, this);
     return 0;
@@ -65,8 +74,11 @@ void Navman::parse(const NmeaPacket* packet) {
         parse_vwvhw(packet);
     } else if (strncmp(id, "VWVLW", 5) == 0) {
         parse_vwvlw(packet);
+    } else if (strncmp(id, "PTTKD", 5) == 0) {
+        parse_pttkd(packet);
+    } else if (strncmp(id, "PTTKV", 5) == 0) {
+        parse_pttkv(packet);
     }
-    // PTTKD, PTTKV — proprietary, logged but not parsed further for now
 }
 
 // $VWMTW,<temperature>,C*XX
@@ -140,4 +152,40 @@ void Navman::parse_vwvlw(const NmeaPacket* packet) {
         solution_.distance_since_reset_nm_ = atof(since_reset);
     }
     solution_.distance_valid_ = true;
+}
+
+// $PTTKD,<depth>,<offset>,<unit>*XX  (proprietary depth)
+void Navman::parse_pttkd(const NmeaPacket* packet) {
+    const char* depth = packet->field(1);
+    if (depth && depth[0] != '\0') {
+        solution_.depth_m_ = atof(depth);
+    }
+    const char* offset = packet->field(2);
+    if (offset && offset[0] != '\0') {
+        solution_.depth_offset_m_ = atof(offset);
+    }
+    solution_.depth_valid_ = true;
+}
+
+// $PTTKV,<speed>,<>,<avg_speed>,<trip_nm>,<total_nm>,<temp>,<temp_unit>*XX  (proprietary velocity/trip)
+void Navman::parse_pttkv(const NmeaPacket* packet) {
+    const char* speed = packet->field(1);
+    if (speed && speed[0] != '\0') {
+        solution_.water_speed_knots_ = atof(speed);
+        solution_.water_speed_valid_ = true;
+    }
+    const char* trip = packet->field(4);
+    if (trip && trip[0] != '\0') {
+        solution_.distance_since_reset_nm_ = atof(trip);
+    }
+    const char* total = packet->field(5);
+    if (total && total[0] != '\0') {
+        solution_.distance_total_nm_ = atof(total);
+        solution_.distance_valid_ = true;
+    }
+    const char* temp = packet->field(6);
+    if (temp && temp[0] != '\0') {
+        solution_.water_temp_f_ = atof(temp);
+        solution_.water_temp_valid_ = true;
+    }
 }

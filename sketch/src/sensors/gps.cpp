@@ -154,6 +154,7 @@ void GPS::update_utc_time(const char* utc_time_field) {
         // Only update if we got a valid non-zero time
         if (parsed_time > 0) {
             solution_.utc_time_ = parsed_time;
+            solution_.utc_time_valid_ = true;
             last_valid_utc_time_ = parsed_time;
             last_valid_timestamp_ = millis();
             has_valid_time_reference_ = true;

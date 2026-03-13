@@ -7,8 +7,9 @@
 #define NAVMAN_DATA_TIMEOUT_MS 5000
 
 struct NavmanSolution {
-    // Water temperature (VWMTW)
+    // Water temperature (VWMTW / PTTKV)
     float water_temp_c_{0.0f};
+    float water_temp_f_{0.0f};
     bool water_temp_valid_{false};
 
     // Depth (SDDBT / SDDPT)
@@ -56,6 +57,8 @@ private:
     void parse_sddpt(const NmeaPacket* packet);
     void parse_vwvhw(const NmeaPacket* packet);
     void parse_vwvlw(const NmeaPacket* packet);
+    void parse_pttkd(const NmeaPacket* packet);
+    void parse_pttkv(const NmeaPacket* packet);
 
     void check_timeout();
 
