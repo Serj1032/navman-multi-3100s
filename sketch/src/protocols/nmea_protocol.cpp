@@ -66,11 +66,13 @@ void NmeaProtocol::process_char(char c) {
         buffer_[buffer_idx_] = '\0';
         LOG_DEBUG("Rx: " + String(buffer_));
         if (is_checksum_valid(buffer_, buffer_idx_)) {
+            increment_stat(stats_.received);
             if (packet_callback_) {
                 NmeaPacket packet(buffer_, buffer_idx_);
                 packet_callback_(&packet, callback_context_);
             }
         } else {
+            increment_stat(stats_.crc_errors);
             LOG_ERROR("NMEA: Checksum invalid");
         }
         buffer_idx_ = 0;
@@ -81,8 +83,16 @@ void NmeaProtocol::process_char(char c) {
         } else {
             LOG_WARN("NMEA: Buffer overflow, resetting buffer");
             buffer_idx_ = 0;
+            increment_stat(stats_.bof_count);
         }
     }   
+}
+
+void NmeaProtocol::increment_stat(uint16_t& stat) {
+    if (stat == UINT16_MAX) {
+        stats_.reset();
+    }
+    stat++;
 }
 
 bool NmeaProtocol::is_checksum_valid(const char* msg, uint16_t size) {

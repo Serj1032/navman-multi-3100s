@@ -44,6 +44,10 @@ public:
         return &solution_;
     }
 
+    const NmeaStats& get_nmea_stats() const {
+        return nmea_.get_stats();
+    }
+
     void process() override;
 
 private:
