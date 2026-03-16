@@ -6,7 +6,7 @@ WelcomeScreen::WelcomeScreen() :
     Screen(), 
     line1_("NAVA", 140, 80, 8),
     line2_("Sailing", 110, 180, 6),
-    author_("Author: Sergei V. Kravchenko", 10, 300, 2)
+    author_("https://github.com/Serj1032/navman-multi-3100s", 10, 300, 1)
 {
     ts_ = millis();
 }
