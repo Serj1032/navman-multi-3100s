@@ -55,19 +55,15 @@ void ScreenManager::change_screen() {
         current_screen_ = nullptr;
     }
 
-    // Serial.print("Switching to screen: ");
     switch (next_screen_type_) {
     case ScreenType::WELCOME:
         current_screen_ = new WelcomeScreen();
-        // Serial.println("WELCOME");
         break;
     case ScreenType::DASHBOARD:
         current_screen_ = new DashboardScreen();
-        // Serial.println("DASHBOARD");
         break;
     case ScreenType::LOG:
         current_screen_ = new LogScreen();
-        // Serial.println("LOG");
         break;
     default:
         break;

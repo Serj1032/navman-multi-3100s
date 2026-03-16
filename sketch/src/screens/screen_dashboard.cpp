@@ -1,6 +1,9 @@
 #include "display/screen.h"
 #include "display/screen_manager.h"
 
+#define LOG_TAG "S-DBD"
+#include "logger.h"
+
 DashboardScreen::DashboardScreen() : Screen(),
                     title_text_("Dashboard A", 5, 4, 2),
                     header_icon_(0, 0, header_icon, header_width, header_height),

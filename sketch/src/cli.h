@@ -16,7 +16,7 @@ public:
 
     void init()
     {
-        Serial.begin(115200);
+        // Serial.begin(115200);
     }
 
     void process()

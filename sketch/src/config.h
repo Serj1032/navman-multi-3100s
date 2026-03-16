@@ -4,12 +4,10 @@
 #include <Arduino.h>
 
 #define NAVMAN_SERIAL Serial3
-#define NAVMAN_BAUDRATE 9600
-#define NAVMAN_SERIAL_BUFFER_SIZE 128
+#define NAVMAN_BAUDRATE 4800
 
 #define GPS_SERIAL Serial2
 #define GPS_BAUDRATE 9600
-#define GPS_SERIAL_BUFFER_SIZE 256
 
 // ==================== BUTTONS CONFIG ====================
 

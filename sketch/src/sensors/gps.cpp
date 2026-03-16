@@ -16,6 +16,7 @@
 #include "config.h"
 #include "gps.h"
 
+#define LOG_TAG "GPS"
 #include "logger.h"
 
 GPS::GPS() : Sensor() {}
@@ -34,6 +35,7 @@ void GPS::process() {
         c = GPS_SERIAL.read();
         nmea_.process_char(c);
     }
+    update_utc_time(nullptr);
 }
 
 void GPS::nmea_callback(const NmeaPacket* packet, void* context) {
@@ -70,9 +72,7 @@ void GPS::parse_gpgsv(const NmeaPacket* packet) {
 void GPS::parse_gprmc(const NmeaPacket* packet) {    
     // Field 1: UTC time
     const char* utc_time = packet->field(1);
-    if (utc_time) {
-        solution_.utc_time_ = atol(utc_time);
-    }
+    update_utc_time(utc_time);
     
     // Field 2: Status (A=valid, V=invalid)
     const char* status = packet->field(2);
@@ -143,5 +143,45 @@ void GPS::parse_gprmc(const NmeaPacket* packet) {
     const char* mode = packet->field(12);
     if (mode) {
         solution_.mode = mode[0];
+    }
+}
+
+void GPS::update_utc_time(const char* utc_time_field) {
+    if (utc_time_field && utc_time_field[0] != '\0') {
+        // Valid UTC time received, parse it
+        uint32_t parsed_time = atol(utc_time_field);
+        
+        // Only update if we got a valid non-zero time
+        if (parsed_time > 0) {
+            solution_.utc_time_ = parsed_time;
+            solution_.utc_time_valid_ = true;
+            last_valid_utc_time_ = parsed_time;
+            last_valid_timestamp_ = millis();
+            has_valid_time_reference_ = true;
+        }
+    } else if (has_valid_time_reference_) {
+        // UTC time missing or empty - interpolate from last valid time
+        uint32_t current_time = millis();
+        uint32_t elapsed_ms = current_time - last_valid_timestamp_;
+        
+        // Convert elapsed milliseconds to HHMMSS.SS format
+        // UTC time format: HHMMSS.SS (e.g., 123456.00 = 12:34:56.00)
+        uint32_t base_time = last_valid_utc_time_;
+        uint32_t hours = (base_time / 10000) % 100;
+        uint32_t minutes = (base_time / 100) % 100;
+        uint32_t seconds = base_time % 100;
+        
+        // Add elapsed time
+        uint32_t total_seconds = hours * 3600 + minutes * 60 + seconds + (elapsed_ms / 1000);
+        
+        // Handle day overflow (86400 seconds = 24 hours)
+        total_seconds = total_seconds % 86400;
+        
+        // Convert back to HHMMSS format
+        hours = total_seconds / 3600;
+        minutes = (total_seconds % 3600) / 60;
+        seconds = total_seconds % 60;
+        
+        solution_.utc_time_ = hours * 10000 + minutes * 100 + seconds;
     }
 }

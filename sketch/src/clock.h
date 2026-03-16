@@ -73,17 +73,6 @@ public:
         }
         const GpsSolution* sol = gps_->get_solution();
         time_.set_time(sol->utc_time_);
-
-        uint8_t hr = time_.get_hours(time_zone_);
-        uint8_t min = time_.get_minutes();
-
-        // TODO: Add any additional processing based on time of day
-        if (hr > 7 && hr < 16) {
-            ColorScheme::get_instance().set_day_mode(true);
-        } else {
-            ColorScheme::get_instance().set_day_mode(false);
-        }
-        
     }
 
     uint32_t get_local_time() const {

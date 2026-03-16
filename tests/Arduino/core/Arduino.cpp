@@ -1,4 +1,5 @@
 #include "Arduino.h"
+#include "MockedGPIO.h"
 #include <sys/time.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -51,9 +52,10 @@ void delayMicroseconds(unsigned int us) {
 }
 
 void pinMode(uint8_t pin, uint8_t mode) {
-    // Mock implementation - does nothing
-    (void)pin;
-    (void)mode;
+    // INPUT_PULLUP pins default to HIGH (not pressed)
+    if (mode == INPUT_PULLUP) {
+        MockedGPIO::set_pin_value(pin, HIGH);
+    }
 }
 
 void digitalWrite(uint8_t pin, uint8_t val) {
@@ -63,9 +65,7 @@ void digitalWrite(uint8_t pin, uint8_t val) {
 }
 
 int digitalRead(uint8_t pin) {
-    // Mock implementation - always returns LOW
-    (void)pin;
-    return LOW;
+    return MockedGPIO::get_pin_value(pin);
 }
 
 int analogRead(uint8_t pin) {

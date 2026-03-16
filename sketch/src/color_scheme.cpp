@@ -1,5 +1,8 @@
 #include "display/color_scheme.h"
 
+#define LOG_TAG "CLRS"
+#include "logger.h"
+
 namespace
 {
     static constexpr uint16_t colorRGB(uint8_t r, uint8_t g, uint8_t b)

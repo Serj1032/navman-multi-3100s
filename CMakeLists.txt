@@ -17,6 +17,17 @@ elseif(HOST_TOOLCHAIN)
     include(${CMAKE_SOURCE_DIR}/tests/third_party/cmake/lsm303.cmake)
     include(${CMAKE_SOURCE_DIR}/tests/third_party/cmake/sdl3.cmake)
     add_subdirectory(${CMAKE_SOURCE_DIR}/tests/Arduino/libraries/DIYables_TFT_Touch_Shield)
+
+    # Mocked data sources for host testing
+    set(mocked_data_sources
+        ${CMAKE_SOURCE_DIR}/tests/mocked_data/gps_nmea_data.cpp
+        ${CMAKE_SOURCE_DIR}/tests/mocked_data/navman_nmea_data.cpp
+        ${CMAKE_SOURCE_DIR}/tests/mocked_data/mocked_data_setup.cpp
+    )
+    set(mocked_data_includes
+        ${CMAKE_SOURCE_DIR}/tests/mocked_data
+        ${CMAKE_SOURCE_DIR}/tests/Arduino/core
+    )
 endif()
 
 set(source_file_list
@@ -24,11 +35,13 @@ set(source_file_list
     ${CMAKE_SOURCE_DIR}/sketch/src/protocols/nmea_protocol.cpp
     ${CMAKE_SOURCE_DIR}/sketch/src/sensors/compass.cpp
     ${CMAKE_SOURCE_DIR}/sketch/src/sensors/gps.cpp
+    ${CMAKE_SOURCE_DIR}/sketch/src/sensors/navman.cpp
     ${CMAKE_SOURCE_DIR}/sketch/src/color_scheme.cpp
     ${CMAKE_SOURCE_DIR}/sketch/src/screens/screen_manager.cpp
     ${CMAKE_SOURCE_DIR}/sketch/src/screens/screen_welcome.cpp
     ${CMAKE_SOURCE_DIR}/sketch/src/screens/screen_dashboard.cpp
     ${CMAKE_SOURCE_DIR}/sketch/src/screen_log.cpp
+    ${CMAKE_SOURCE_DIR}/sketch/src/keyboard.cpp
 )
 
 set(include_dir_list
@@ -52,10 +65,12 @@ endif()
 add_executable(navman-multi-3100s 
     sketch/navman-multi-3100s.cpp
     ${source_file_list}
+    ${mocked_data_sources}
 )
 
 target_include_directories(navman-multi-3100s PRIVATE
-    ${include_dir_list} 
+    ${include_dir_list}
+    ${mocked_data_includes}
 )
 
 # Link Arduino core library
@@ -77,26 +92,3 @@ endif()
 
 # Generate hex and bin files
 arduino_executable(navman-multi-3100s)
-
-# AVR flash configuration
-set(AVRDUDE_PATH "$ENV{HOME}/Library/Arduino15/packages/arduino/tools/avrdude/6.3.0-arduino17/bin/avrdude" CACHE STRING "Path to avrdude binary")
-set(AVRDUDE_CONFIG "$ENV{HOME}/Library/Arduino15/packages/arduino/tools/avrdude/6.3.0-arduino17/etc/avrdude.conf" CACHE STRING "Path to avrdude config")
-set(AVRDUDE_PORT "/dev/cu.usbserial-1140" CACHE STRING "Serial port for flashing")
-set(AVRDUDE_PROGRAMMER "wiring" CACHE STRING "Programmer type (wiring for ATmega2560)")
-set(AVRDUDE_BAUD "115200" CACHE STRING "Baud rate for flashing")
-
-# Add flash target
-add_custom_target(flash
-    COMMAND ${AVRDUDE_PATH} -C${AVRDUDE_CONFIG} -v -patmega2560 -c${AVRDUDE_PROGRAMMER} -P${AVRDUDE_PORT} -b${AVRDUDE_BAUD} -D -Uflash:w:navman-multi-3100s.hex:i
-    DEPENDS navman-multi-3100s
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-    COMMENT "Flashing ATmega2560 with ${AVRDUDE_PORT} at ${AVRDUDE_BAUD} baud"
-)
-
-# Add flash-bin target (alternative using .bin file)
-add_custom_target(flash-bin
-    COMMAND ${AVRDUDE_PATH} -C${AVRDUDE_CONFIG} -v -patmega2560 -c${AVRDUDE_PROGRAMMER} -P${AVRDUDE_PORT} -b${AVRDUDE_BAUD} -D -Uflash:w:navman-multi-3100s.bin:r
-    DEPENDS navman-multi-3100s
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-    COMMENT "Flashing ATmega2560 with .bin file using ${AVRDUDE_PORT} at ${AVRDUDE_BAUD} baud"
-)
