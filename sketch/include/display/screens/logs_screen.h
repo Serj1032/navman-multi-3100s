@@ -4,16 +4,15 @@
 #include "display/text.h"
 #include "display/icons/bitmap_icon.h"
 #include "display/assets/header.h"
-#include "display/color_scheme.h"
 
-class LogScreen : public Screen
+class LogsScreen : public Screen
 {
 public:
-    LogScreen();
-    ~LogScreen() override = default;
+    LogsScreen();
+    ~LogsScreen() override = default;
 
     void update() override;
-    
+
 protected:
     void draw_screen(Display &display) override;
     void clear_screen(Display &display) override;
@@ -22,4 +21,5 @@ protected:
 private:
     Text title_text_;
     BitmapIcon header_icon_;
+    Buttons buttons_;
 };

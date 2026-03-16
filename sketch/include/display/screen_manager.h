@@ -9,7 +9,9 @@ enum class ScreenType : uint8_t
     NONE = 0,
     WELCOME,
     DASHBOARD,
-    LOG,
+    SYSTEM_INFO,
+    LOGS,
+    SCREEN_COUNT  // always last — used for navigation
 };
 
 class ScreenManager
@@ -31,6 +33,9 @@ public:
     {
         next_screen_type_ = screen_type;
     }
+
+    void next_screen();
+    void previous_screen();
 
 private:
     ScreenManager();

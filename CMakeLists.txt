@@ -40,7 +40,8 @@ set(source_file_list
     ${CMAKE_SOURCE_DIR}/sketch/src/screens/screen_manager.cpp
     ${CMAKE_SOURCE_DIR}/sketch/src/screens/screen_welcome.cpp
     ${CMAKE_SOURCE_DIR}/sketch/src/screens/screen_dashboard.cpp
-    ${CMAKE_SOURCE_DIR}/sketch/src/screen_log.cpp
+    ${CMAKE_SOURCE_DIR}/sketch/src/screens/screen_logs.cpp
+    ${CMAKE_SOURCE_DIR}/sketch/src/screens/screen_system_info.cpp
     ${CMAKE_SOURCE_DIR}/sketch/src/keyboard.cpp
     ${CMAKE_SOURCE_DIR}/sketch/src/display/text.cpp
     ${CMAKE_SOURCE_DIR}/sketch/src/display/icons/arrow_icon.cpp

@@ -17,8 +17,8 @@ DashboardScreen::DashboardScreen() : Screen(),
 
     buttons_.get_button(0).set_icon(BitmapIcon(0, 0, bulb_icon, bulb_width, bulb_height));
     // buttons_.get_button(1).set_icon(BitmapIcon(0, 0, settings_icon, settings_width, settings_height));
-    // buttons_.get_button(2).set_icon(BitmapIcon(0, 0, left_arrow_icon, left_arrow_width, left_arrow_height));
-    // buttons_.get_button(3).set_icon(BitmapIcon(0, 0, right_arrow_icon, right_arrow_width, right_arrow_height));
+    buttons_.get_button(2).set_icon(BitmapIcon(0, 0, left_arrow_icon, left_arrow_width, left_arrow_height));
+    buttons_.get_button(3).set_icon(BitmapIcon(0, 0, right_arrow_icon, right_arrow_width, right_arrow_height));
 }
 
 void DashboardScreen::draw_screen(Display &display)
@@ -56,8 +56,16 @@ void DashboardScreen::update()
 
 void DashboardScreen::key_press_handler(uint8_t button_index, ButtonEventType event_type)
 {
-    if (button_index == 0 && event_type == ButtonEventType::SHORT) // Bulb button
+    if (button_index == 0 && event_type == ButtonEventType::SHORT)
     {
         ColorScheme::get_instance().toggle_theme();
-    }
+    } 
+    else if (button_index == 2 && event_type == ButtonEventType::SHORT) 
+    {
+        ScreenManager::get_instance().next_screen();
+    } 
+    else if (button_index == 3 && event_type == ButtonEventType::SHORT) 
+    {
+        ScreenManager::get_instance().previous_screen();
+    } 
 }

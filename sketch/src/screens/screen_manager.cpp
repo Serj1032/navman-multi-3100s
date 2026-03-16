@@ -48,6 +48,24 @@ void ScreenManager::reinit()
     current_screen_type_ = ScreenType::NONE;
 }
 
+void ScreenManager::next_screen() {
+    uint8_t next = static_cast<uint8_t>(current_screen_type_) + 1;
+    // Skip WELCOME (index 1) when cycling — it's only shown at startup
+    if (next >= static_cast<uint8_t>(ScreenType::SCREEN_COUNT)) {
+        next = static_cast<uint8_t>(ScreenType::DASHBOARD);
+    }
+    set_next_screen(static_cast<ScreenType>(next));
+}
+
+void ScreenManager::previous_screen() {
+    uint8_t prev = static_cast<uint8_t>(current_screen_type_) - 1;
+    // Skip WELCOME and NONE — wrap to last usable screen
+    if (prev <= static_cast<uint8_t>(ScreenType::WELCOME)) {
+        prev = static_cast<uint8_t>(ScreenType::SCREEN_COUNT) - 1;
+    }
+    set_next_screen(static_cast<ScreenType>(prev));
+}
+
 void ScreenManager::change_screen() {
     if (current_screen_ != nullptr) {
         current_screen_->clear(*display_);
@@ -62,8 +80,11 @@ void ScreenManager::change_screen() {
     case ScreenType::DASHBOARD:
         current_screen_ = new DashboardScreen();
         break;
-    case ScreenType::LOG:
-        current_screen_ = new LogScreen();
+    case ScreenType::LOGS:
+        current_screen_ = new LogsScreen();
+        break;
+    case ScreenType::SYSTEM_INFO:
+        current_screen_ = new SystemInfoScreen();
         break;
     default:
         break;
