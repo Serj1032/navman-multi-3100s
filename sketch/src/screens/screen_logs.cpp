@@ -63,9 +63,9 @@ void LogsScreen::clear_screen(Display &display)
     title_text_.clear_content(display);
     buttons_.clear_content(display);
 
-    // Clear entire log area with a single rect fill — reliable regardless of line positions
-    display.draw_rect(0, LOGS_START_Y, WIDTH, HEIGHT - LOGS_START_Y,
-                      ColorScheme::get_instance().background_color());
+    for (uint8_t i = 0; i < LOGS_MAX_LINES; i++) {
+        lines_[i].clear_content(display);
+    }
 }
 
 void LogsScreen::update()
@@ -158,12 +158,12 @@ void LogsScreen::push_line(const char* line)
 {
     if (paused_) return;
 
-    // Shift all line content up by one (positions stay fixed)
-    for (uint8_t i = 0; i < LOGS_MAX_LINES - 1; i++) {
-        lines_[i].set_text(lines_[i + 1].get_text());
-    }
-    // Newest line goes to the bottom row
-    lines_[LOGS_MAX_LINES - 1].set_text(line);
+    // Write new line at current position
+    lines_[write_idx_].set_text(line);
+
+    // Advance and erase the next line to act as a visual cursor gap
+    write_idx_ = (write_idx_ + 1) % LOGS_MAX_LINES;
+    lines_[write_idx_].set_text("");
 }
 
 void LogsScreen::clear_lines()
@@ -171,6 +171,7 @@ void LogsScreen::clear_lines()
     for (uint8_t i = 0; i < LOGS_MAX_LINES; i++) {
         lines_[i].set_text("");
     }
+    write_idx_ = 0;
 }
 
 void LogsScreen::on_gps_raw_line(const char* line, void* ctx)

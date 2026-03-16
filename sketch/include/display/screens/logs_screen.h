@@ -52,8 +52,9 @@ private:
     Text title_text_;
     Buttons buttons_;
 
-    // Log lines (fixed positions, content shifts up)
+    // Log lines (visual ring buffer)
     Text lines_[LOGS_MAX_LINES];
+    uint8_t write_idx_{0};
 
     // Mode
     LogMode mode_{LogMode::GPS_NMEA};

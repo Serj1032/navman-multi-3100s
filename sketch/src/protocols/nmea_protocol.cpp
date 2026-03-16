@@ -66,7 +66,7 @@ void NmeaProtocol::process_char(char c) {
         buffer_[buffer_idx_] = '\0';
 
         // Notify raw line listener before parsing modifies the buffer
-        if (raw_line_callback_) {
+        if (raw_line_callback_ && buffer_[0] != '\0') {
             raw_line_callback_(buffer_, raw_line_context_);
         }
 
