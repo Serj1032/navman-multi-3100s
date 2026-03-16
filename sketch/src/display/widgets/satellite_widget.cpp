@@ -1,0 +1,49 @@
+#include "display/widgets/satellite_widget.h"
+#include "display/color_scheme.h"
+#include "display/assets/sattelite.h"
+#include "sensor_manager.h"
+#include "utils.h"
+
+SatelliteWidget::SatelliteWidget(uint16_t x, uint16_t y)
+    : Widget(x, y)
+    , sv_count_text_(" 0", x_, y_ + 5, 2)
+    , satellite_icon_(x_ + 30, y_, sattelite_icon, sattelite_width, sattelite_height)
+    , mode_text_("", x_ + 60, y_ + 5, 2)
+{
+    set_color(ColorScheme::get_instance().header_color());
+    gps_ = SensorManager::get_instance().get_sensor<GPS>();
+}
+
+void SatelliteWidget::clear_content(Display &display) {
+    satellite_icon_.clear_content(display);
+    sv_count_text_.clear_content(display);
+    mode_text_.clear_content(display);
+}
+
+void SatelliteWidget::draw_content(Display &display) {
+    satellite_icon_.draw(display);
+    sv_count_text_.draw(display);
+    mode_text_.draw(display);
+}
+
+void SatelliteWidget::update() {
+    if (!gps_) {
+        return;
+    }
+    const GpsSolution* sol = gps_->get_solution();
+
+    uint16_t sv_count = sol->sv_count_;
+    sv_count_text_.set_text(padStart(String(sv_count), 2, ' '));
+
+    if (sol->is_valid_) {
+        satellite_icon_.set_color(ColorScheme::get_instance().default_icon_color());
+    } else {
+        satellite_icon_.set_color(ColorScheme::get_instance().warning_color());
+    }
+
+    mode_text_.set_text(String(sol->mode));
+
+    if (sv_count_text_.is_dirty() || satellite_icon_.is_dirty() || mode_text_.is_dirty()) {
+        mark_dirty();
+    }
+}
