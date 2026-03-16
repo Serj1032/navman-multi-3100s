@@ -1,16 +1,13 @@
 #pragma once
 
+#include "config.h"
 #include "display/display.h"
 #include "keyboard.h"
 
 class Screen
 {
 public:
-    Screen() : Screen(2)
-    {
-    }
-
-    Screen(uint8_t fps) : fps_(fps)
+    Screen(uint8_t fps = SCREEN_FPS) : fps_(fps)
     {
         Keyboard::get_instance().subscribe(on_key_pressed, this);
     }
