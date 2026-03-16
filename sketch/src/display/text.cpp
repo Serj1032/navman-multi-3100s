@@ -32,7 +32,7 @@ void Text::clear_content(Display &display)
 
 const String &Text::get_text() const
 {
-    return text_;
+    return new_text_;
 }
 
 void Text::set_text(const String &text)

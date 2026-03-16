@@ -64,6 +64,12 @@ void NmeaProtocol::process_char(char c) {
             return;
         }
         buffer_[buffer_idx_] = '\0';
+
+        // Notify raw line listener before parsing modifies the buffer
+        if (raw_line_callback_) {
+            raw_line_callback_(buffer_, raw_line_context_);
+        }
+
         LOG_DEBUG("Rx: " + String(buffer_));
         if (is_checksum_valid(buffer_, buffer_idx_)) {
             increment_stat(stats_.received);

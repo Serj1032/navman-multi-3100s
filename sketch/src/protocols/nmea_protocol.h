@@ -39,6 +39,7 @@ private:
 };
 
 using OnNmeaPacketCallback = void(*)(const NmeaPacket* packet, void* context);
+using OnNmeaRawLineCallback = void(*)(const char* line, void* context);
 
 class NmeaProtocol {
 public:
@@ -52,6 +53,11 @@ public:
         callback_context_ = context;
     }
 
+    void set_raw_line_callback(OnNmeaRawLineCallback callback, void* context = nullptr) {
+        raw_line_callback_ = callback;
+        raw_line_context_ = context;
+    }
+
     const NmeaStats& get_stats() const { return stats_; }
 
 private:
@@ -63,5 +69,7 @@ private:
     uint16_t buffer_idx_ = 0;
     OnNmeaPacketCallback packet_callback_ = nullptr;
     void* callback_context_ = nullptr;
+    OnNmeaRawLineCallback raw_line_callback_ = nullptr;
+    void* raw_line_context_ = nullptr;
     NmeaStats stats_;
 };

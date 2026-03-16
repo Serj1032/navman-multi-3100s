@@ -42,6 +42,8 @@
 #define LOG_ERROR(msg)
 #endif
 
+using LogListenerCallback = void(*)(const char* message, void* context);
+
 class Logger {
 public:
     enum class LogLevel : uint8_t {
@@ -57,6 +59,11 @@ public:
     }
 
     void log(const String& message, LogLevel level = LogLevel::INFO);
+
+    void set_listener(LogListenerCallback callback, void* context = nullptr) {
+        listener_ = callback;
+        listener_context_ = context;
+    }
 
     void log_debug(const String& message) {
         log(message, LogLevel::DEBUG);
@@ -78,8 +85,8 @@ private:
     Logger();
     ~Logger() = default;
 
-// private:
-    // LogLevel level_ = LogLevel::INFO;
+    LogListenerCallback listener_ = nullptr;
+    void* listener_context_ = nullptr;
 };
 #else
 #define LOG_DEBUG(msg)
