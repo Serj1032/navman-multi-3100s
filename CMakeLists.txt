@@ -33,6 +33,7 @@ endif()
 set(source_file_list
     ${CMAKE_SOURCE_DIR}/sketch/src/sensor_manager.cpp
     ${CMAKE_SOURCE_DIR}/sketch/src/protocols/nmea_protocol.cpp
+    ${CMAKE_SOURCE_DIR}/sketch/src/sensors/adc.cpp
     ${CMAKE_SOURCE_DIR}/sketch/src/sensors/compass.cpp
     ${CMAKE_SOURCE_DIR}/sketch/src/sensors/gps.cpp
     ${CMAKE_SOURCE_DIR}/sketch/src/sensors/navman.cpp

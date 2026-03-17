@@ -3,11 +3,13 @@
 static Compass compass;
 static GPS gps;
 static Navman navman;
+static BatterySensor adc;
 
 void SensorManager::initialize_sensors() {
     compass.initialize();
     gps.initialize();
     navman.initialize();
+    adc.initialize();
 }
 
 void SensorManager::process_sensors() {
@@ -19,6 +21,9 @@ void SensorManager::process_sensors() {
     }
     if (navman.is_available()) {
         navman.process();
+    }
+    if (adc.is_available()) {
+        adc.process();
     }
 }
 
@@ -44,4 +49,12 @@ Navman* SensorManager::get_sensor<Navman>() {
         return nullptr;
     }
     return &navman;
+}
+
+template <>
+BatterySensor* SensorManager::get_sensor<BatterySensor>() {
+    if (!adc.is_available()) {
+        return nullptr;
+    }
+    return &adc;
 }

@@ -1,5 +1,7 @@
 #include "display/screen.h"
 #include "display/screen_manager.h"
+#include "sensor_manager.h"
+#include "utils.h"
 
 #define LOG_TAG "S-DBD"
 #include "logger.h"
@@ -10,7 +12,8 @@ DashboardScreen::DashboardScreen() : Screen(),
                     heading_widget_(350, 150),
                     clock_widget_(180, 5),
                     metrics_widget_(20, 40),
-                    satellite_widget_(400, 5)
+                    satellite_widget_(400, 5),
+                    battery_text_("0.0V", 320, 5, 2)
 {
     header_icon_.set_child(&title_text_);
     header_icon_.set_color(ColorScheme::get_instance().header_color());
@@ -31,6 +34,7 @@ void DashboardScreen::draw_screen(Display &display)
     clock_widget_.draw(display);
     metrics_widget_.draw(display);
     satellite_widget_.draw(display);
+    battery_text_.draw(display);
 }
 
 void DashboardScreen::clear_screen(Display &display)
@@ -43,6 +47,7 @@ void DashboardScreen::clear_screen(Display &display)
     clock_widget_.clear_content(display);
     metrics_widget_.clear_content(display);
     satellite_widget_.clear_content(display);
+    battery_text_.clear_content(display);
 }
 
 
@@ -51,7 +56,13 @@ void DashboardScreen::update()
     satellite_widget_.update();
     metrics_widget_.update();
     heading_widget_.update();
-    clock_widget_.update(); 
+    clock_widget_.update();
+
+    BatterySensor* adc = SensorManager::get_instance().get_sensor<BatterySensor>();
+    if (adc) {
+        float v = adc->voltage();
+        battery_text_.set_text(padStart(String(v, 1), 4, ' ') + "V");
+    }
 }
 
 void DashboardScreen::key_press_handler(uint8_t button_index, ButtonEventType event_type)

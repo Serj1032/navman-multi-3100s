@@ -35,4 +35,5 @@ private:
     ClockWidget clock_widget_;
     MetricsWidget metrics_widget_;
     SatelliteWidget satellite_widget_;
+    Text battery_text_;
 };

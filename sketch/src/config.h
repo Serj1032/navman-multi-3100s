@@ -32,4 +32,11 @@
 #define BUTTON_4_PIN 28
 #define BUTTON_4_PULL INPUT_PULLUP
 
+// ==================== ADC CONFIG ====================
+
+#define ADC_BATTERY_PIN A10
+#define ADC_BATTERY_SCALE_FACTOR 6.720588f
+#define ADC_VREF 5.0f
+#define ADC_RESOLUTION 1024
+
 #endif // CONFIG_H
