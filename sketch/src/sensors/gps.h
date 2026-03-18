@@ -31,6 +31,12 @@ public:
         return &solution_;
     }
 
+    const NmeaStats& get_nmea_stats() const {
+        return nmea_.get_stats();
+    }
+
+    NmeaProtocol& get_nmea_protocol() { return nmea_; }
+
     void process() override;
 
 private:

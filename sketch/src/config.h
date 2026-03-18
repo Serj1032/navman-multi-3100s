@@ -9,13 +9,15 @@
 #define GPS_SERIAL Serial2
 #define GPS_BAUDRATE 9600
 
+#define SCREEN_FPS 2
+
 // ==================== BUTTONS CONFIG ====================
 
 #define BUTTONS_AMOUNT 4
 #define BUTTONS_EVENTS_QUEUE 10
 #define BUTTONS_EVENT_MAX_HANDLERS 10
 
-#define BUTTON_SHORT_PRESS_DURATION_MS 50
+#define BUTTON_SHORT_PRESS_DURATION_MS 20
 #define BUTTON_LONG_PRESS_DURATION_MS 500
 
 #define BUTTON_1_PIN 22
@@ -29,5 +31,12 @@
 
 #define BUTTON_4_PIN 28
 #define BUTTON_4_PULL INPUT_PULLUP
+
+// ==================== ADC CONFIG ====================
+
+#define ADC_BATTERY_PIN A10
+#define ADC_BATTERY_SCALE_FACTOR 6.720588f
+#define ADC_VREF 5.0f
+#define ADC_RESOLUTION 1024
 
 #endif // CONFIG_H

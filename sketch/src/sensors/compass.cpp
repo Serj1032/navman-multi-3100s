@@ -33,10 +33,13 @@ int Compass::probe() {
     lead to an assumed magnetometer bias of 0. Use the Calibrate example
     program to determine appropriate values for your particular unit.
     */
-    // compass.m_min = (LSM303::vector<int16_t>){-32767, -32767, -32767};
-    // compass.m_max = (LSM303::vector<int16_t>){+32767, +32767, +32767};
-    compass.m_min = (LSM303::vector<int16_t>){-523, -612, -301};
-    compass.m_max = (LSM303::vector<int16_t>){+393, +510, +475};
+#ifdef COMPASS_CALIBRATION
+    compass.m_min = (LSM303::vector<int16_t>){-32767, -32767, -32767};
+    compass.m_max = (LSM303::vector<int16_t>){+32767, +32767, +32767};
+#else
+    compass.m_min = (LSM303::vector<int16_t>){+171,   -272,   -163};
+    compass.m_max = (LSM303::vector<int16_t>){+244,   +193,   +136};
+#endif
 
     ts_ = millis();
     return 0;

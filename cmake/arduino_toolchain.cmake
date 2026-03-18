@@ -44,6 +44,7 @@ function(toolchain_configure_library TARGET_NAME)
         ARDUINO=10607
         ARDUINO_AVR_MEGA2560
         ARDUINO_ARCH_AVR
+        SERIAL_RX_BUFFER_SIZE=256
     )
     
     target_compile_options(${TARGET_NAME} PUBLIC

@@ -21,6 +21,19 @@ typedef bool boolean;
 #define OUTPUT 0x1
 #define INPUT_PULLUP 0x2
 
+// Analog pin aliases (ATmega2560 mapping)
+#define A0 54
+#define A1 55
+#define A2 56
+#define A3 57
+#define A4 58
+#define A5 59
+#define A6 60
+#define A7 61
+#define A8 62
+#define A9 63
+#define A10 64
+
 #define PI 3.1415926535897932384626433832795
 #define HALF_PI 1.5707963267948966192313216916398
 #define TWO_PI 6.283185307179586476925286766559

@@ -33,6 +33,7 @@ endif()
 set(source_file_list
     ${CMAKE_SOURCE_DIR}/sketch/src/sensor_manager.cpp
     ${CMAKE_SOURCE_DIR}/sketch/src/protocols/nmea_protocol.cpp
+    ${CMAKE_SOURCE_DIR}/sketch/src/sensors/adc.cpp
     ${CMAKE_SOURCE_DIR}/sketch/src/sensors/compass.cpp
     ${CMAKE_SOURCE_DIR}/sketch/src/sensors/gps.cpp
     ${CMAKE_SOURCE_DIR}/sketch/src/sensors/navman.cpp
@@ -40,8 +41,18 @@ set(source_file_list
     ${CMAKE_SOURCE_DIR}/sketch/src/screens/screen_manager.cpp
     ${CMAKE_SOURCE_DIR}/sketch/src/screens/screen_welcome.cpp
     ${CMAKE_SOURCE_DIR}/sketch/src/screens/screen_dashboard.cpp
-    ${CMAKE_SOURCE_DIR}/sketch/src/screen_log.cpp
+    ${CMAKE_SOURCE_DIR}/sketch/src/screens/screen_logs.cpp
+    ${CMAKE_SOURCE_DIR}/sketch/src/screens/screen_system_info.cpp
     ${CMAKE_SOURCE_DIR}/sketch/src/keyboard.cpp
+    ${CMAKE_SOURCE_DIR}/sketch/src/display/text.cpp
+    ${CMAKE_SOURCE_DIR}/sketch/src/display/icons/arrow_icon.cpp
+    ${CMAKE_SOURCE_DIR}/sketch/src/display/icons/boat_icon.cpp
+    ${CMAKE_SOURCE_DIR}/sketch/src/display/icons/bitmap_icon.cpp
+    ${CMAKE_SOURCE_DIR}/sketch/src/display/widgets/heading_widget.cpp
+    ${CMAKE_SOURCE_DIR}/sketch/src/display/widgets/clock_widget.cpp
+    ${CMAKE_SOURCE_DIR}/sketch/src/display/widgets/satellite_widget.cpp
+    ${CMAKE_SOURCE_DIR}/sketch/src/display/widgets/metric_value_widget.cpp
+    ${CMAKE_SOURCE_DIR}/sketch/src/display/widgets/metrics_widget.cpp
 )
 
 set(include_dir_list

@@ -22,6 +22,7 @@ public:
         icon_.set_parent(this);
         icon_.set_color(ColorScheme::get_instance().default_icon_color());
         icon_.set_position(x_ + (width_ - icon_.width()) / 2, y_ + (height_ - icon_.height()) / 2);
+        is_dirty_ = true;
         mark_dirty();
 
         content_ = &icon_;
@@ -33,6 +34,7 @@ public:
         label_.set_parent(this);
         label_.set_color(ColorScheme::get_instance().text_color());
         label_.set_position(x_ + (width_ - label_.width()) / 2, y_ + (height_ - label_.height()) / 2);
+        is_dirty_ = true;
         mark_dirty();
 
         content_ = &label_;
