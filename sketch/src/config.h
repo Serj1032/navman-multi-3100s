@@ -9,7 +9,7 @@
 #define GPS_SERIAL Serial2
 #define GPS_BAUDRATE 9600
 
-#define SCREEN_FPS 4
+#define SCREEN_FPS 2
 
 // ==================== BUTTONS CONFIG ====================
 
