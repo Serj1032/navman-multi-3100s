@@ -75,6 +75,7 @@ uint16_t HeadingWidget::compute_arrow_length(float speed_knots) {
 void HeadingWidget::draw_compass_rose(Display &display, uint16_t color) {
     display.draw_circle(x(), y(), radius_, color);
     display.draw_circle(x(), y(), radius_ - 1, color);
+    display.draw_circle(x(), y(), radius_ - 2, color);
 
     display.draw_text(x() - 5, y() - radius_ - 15, "N", 2, color);
     display.draw_text(x() - 5, y() + radius_ + 5, "S", 2, color);

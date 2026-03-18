@@ -15,8 +15,10 @@ public:
 
 private:
     void draw_boat(Display &display, uint16_t color);
+    void draw_thick_line(Display &display, int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color);
 
     float resolution_;
     float angle_;
     float new_angle_;
+    int width_ = 3;
 };

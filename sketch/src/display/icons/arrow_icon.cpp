@@ -57,16 +57,14 @@ void ArrowIcon::draw_arrow(Display &display, uint16_t color) {
     int16_t x_end = x_;
     int16_t y_end = y_ - length_;
 
-    // Draw arrow shaft (3 lines for thickness)
-    for (int i = -1; i <= 1; i++) {
-        int16_t x0 = x_start + i;
-        int16_t y0 = y_start;
-        int16_t x1 = x_end + i;
-        int16_t y1 = y_end;
-        rotate_by_angle(x_, y_, x0, y0, angle_);
-        rotate_by_angle(x_, y_, x1, y1, angle_);
-        display.draw_line(x0, y0, x1, y1, color);
-    }
+    // Draw arrow shaft
+    int16_t sx = x_start;
+    int16_t sy = y_start;
+    int16_t ex = x_end;
+    int16_t ey = y_end;
+    rotate_by_angle(x_, y_, sx, sy, angle_);
+    rotate_by_angle(x_, y_, ex, ey, angle_);
+    draw_thick_line(display, sx, sy, ex, ey, color);
 
     // Draw arrowhead
     int16_t x0 = x_end;
@@ -79,4 +77,14 @@ void ArrowIcon::draw_arrow(Display &display, uint16_t color) {
     rotate_by_angle(x_, y_, x1, y1, angle_);
     rotate_by_angle(x_, y_, x2, y2, angle_);
     display.draw_fill_triangle(x0, y0, x1, y1, x2, y2, color);
+}
+
+void ArrowIcon::draw_thick_line(Display &display, int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color) {
+    for (int dx = -(width_ - 1); dx < width_; ++dx) {
+        for (int dy = -(width_ - 1); dy < width_; ++dy) {
+            if (abs(dx) + abs(dy) < width_) {
+                display.draw_line(x0 + dx, y0 + dy, x1 + dx, y1 + dy, color);
+            }
+        }
+    }
 }

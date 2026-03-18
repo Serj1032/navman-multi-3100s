@@ -46,6 +46,16 @@ void BoatIcon::set_angle(float angle) {
     mark_dirty();
 }
 
+void BoatIcon::draw_thick_line(Display &display, int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color) {
+    for (int dx = -(width_ - 1); dx < width_; ++dx) {
+        for (int dy = -(width_ - 1); dy < width_; ++dy) {
+            if (abs(dx) + abs(dy) < width_) {
+                display.draw_line(x0 + dx, y0 + dy, x1 + dx, y1 + dy, color);
+            }
+        }
+    }
+}
+
 void BoatIcon::draw_boat(Display &display, uint16_t color) {
     int16_t xl = x_ + kBoatX[0];
     int16_t yl = y_ + kBoatY[0];
@@ -53,23 +63,23 @@ void BoatIcon::draw_boat(Display &display, uint16_t color) {
     int16_t yr = y_ + kBoatY[0];
     rotate_by_angle(x_, y_, xl, yl, angle_);
     rotate_by_angle(x_, y_, xr, yr, angle_);
-    display.draw_line(xl, yl, xr, yr, color);
+    draw_thick_line(display, xl, yl, xr, yr, color);
 
     for (int i = 0; i < kBoatPointCount - 1; ++i) {
-        int16_t _xl = x_ + kBoatX[i + 1];
-        int16_t _yl = y_ + kBoatY[i + 1];
-        int16_t _xr = x_ - kBoatX[i + 1];
-        int16_t _yr = y_ + kBoatY[i + 1];
+        int16_t next_xl = x_ + kBoatX[i + 1];
+        int16_t next_yl = y_ + kBoatY[i + 1];
+        int16_t next_xr = x_ - kBoatX[i + 1];
+        int16_t next_yr = y_ + kBoatY[i + 1];
 
-        rotate_by_angle(x_, y_, _xl, _yl, angle_);
-        rotate_by_angle(x_, y_, _xr, _yr, angle_);
+        rotate_by_angle(x_, y_, next_xl, next_yl, angle_);
+        rotate_by_angle(x_, y_, next_xr, next_yr, angle_);
 
-        display.draw_line(xl, yl, _xl, _yl, color);
-        display.draw_line(xr, yr, _xr, _yr, color);
+        draw_thick_line(display, xl, yl, next_xl, next_yl, color);
+        draw_thick_line(display, xr, yr, next_xr, next_yr, color);
 
-        xl = _xl;
-        yl = _yl;
-        xr = _xr;
-        yr = _yr;
+        xl = next_xl;
+        yl = next_yl;
+        xr = next_xr;
+        yr = next_yr;
     }
 }
