@@ -74,11 +74,12 @@ void Navman::parse(const NmeaPacket* packet) {
         parse_vwvhw(packet);
     } else if (strncmp(id, "VWVLW", 5) == 0) {
         parse_vwvlw(packet);
-    } else if (strncmp(id, "PTTKD", 5) == 0) {
-        parse_pttkd(packet);
-    } else if (strncmp(id, "PTTKV", 5) == 0) {
-        parse_pttkv(packet);
     }
+    //  else if (strncmp(id, "PTTKD", 5) == 0) {
+    //     parse_pttkd(packet);
+    // } else if (strncmp(id, "PTTKV", 5) == 0) {
+    //     parse_pttkv(packet);
+    // }
 }
 
 // $VWMTW,<temperature>,C*XX
