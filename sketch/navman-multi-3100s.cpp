@@ -22,7 +22,7 @@ void setup() {
   LOG_INFO("Starting Navman Multi 3100s");
   SensorManager::get_instance().initialize_sensors();
   // Cli::get_instance().init();
-  Clock::get_instance().init(1); // UTC+1
+  Clock::get_instance().init(2); // UTC+2
   Keyboard::get_instance().init();
   Display::get_instance().init();
   ScreenManager::get_instance().init(&Display::get_instance());

@@ -37,8 +37,8 @@ int Compass::probe() {
     compass.m_min = (LSM303::vector<int16_t>){-32767, -32767, -32767};
     compass.m_max = (LSM303::vector<int16_t>){+32767, +32767, +32767};
 #else
-    compass.m_min = (LSM303::vector<int16_t>){+171,   -272,   -163};
-    compass.m_max = (LSM303::vector<int16_t>){+244,   +193,   +136};
+    compass.m_min = (LSM303::vector<int16_t>){-305,   +470,   -292};
+    compass.m_max = (LSM303::vector<int16_t>){+98,   +537,   +192};
 #endif
 
     ts_ = millis();
@@ -56,9 +56,9 @@ void Compass::process() {
 #ifdef COMPASS_CALIBRATION
         calibration_update();
 #endif
-        // Compass is mounted with: X→down, Y→left, Z→forward
-        // The 'from' vector is the vessel's forward direction in sensor coords = Z axis
-        heading_ = compass.heading((LSM303::vector<int>){0, 0, 1});
+        // Compass is mounted with: X→left, Y→down, Z→back
+        // The 'from' vector is the vessel's forward direction in sensor coords = -Z axis
+        heading_ = compass.heading((LSM303::vector<int>){0, 0, -1});
         ts_ = now;
     }
 }
@@ -95,9 +95,9 @@ void Compass::calibration_update() {
 void Compass::calibration_report() {
     char buf[120];
     snprintf(buf, sizeof(buf),
-        "COMPASS CAL | min: {%+6d, %+6d, %+6d}  max: {%+6d, %+6d, %+6d}",
+        LOG_TAG "CAL min:{%+6d, %+6d, %+6d} max: {%+6d, %+6d, %+6d}",
         cal_min_.x, cal_min_.y, cal_min_.z,
         cal_max_.x, cal_max_.y, cal_max_.z);
-    Serial.println(buf);
+    Logger::get_instance().log_info(buf);
 }
 #endif // COMPASS_CALIBRATION

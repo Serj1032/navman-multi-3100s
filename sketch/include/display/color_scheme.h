@@ -35,5 +35,5 @@ private:
     ColorScheme() = default;
 
 private:
-    bool day_mode_ = false;
+    bool day_mode_ = true;
 };
